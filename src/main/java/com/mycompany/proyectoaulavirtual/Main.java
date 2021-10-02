@@ -5,14 +5,21 @@ import java.io.*;
 public class Main {
     
     public static void main( String arg[] ) throws IOException {
-        Colegio colegio = new Colegio(); // Se construye el objeto colegio que contiene la listaAlumnos
-        Alumno alumno = new Alumno( "Bastián", "20.522.213-8", 20, "INF2241-1"); // Se construye el objeto alumno y se registra nombre, rut, edad, curso
-        colegio.agregarAlumno( alumno ); // Se guarda el objeto alumno en la listaAlumnos
-        colegio.mostrarAlumno(); // Se muestran los alumnos almacenados en listaAlumnos;
-        /*
-        int opcion, numero, edad, aux = 0, i = 0, k;
-        String ingresado, nombre, rut, curso;
+        Colegio colegio = new Colegio();     
+        Alumno alumno = null;     
+        Profesor profesor = null;
+        
+        int edad, aux = 0, i = 1, k = 1;
+        String opcion, ingresado, nombre, rut, curso;
         BufferedReader lector = new BufferedReader( new InputStreamReader( System.in ) );
+        
+        /*
+        // VALORES DE PRUEBA
+        alumno = new Alumno( "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "INF2241-1"); i++; colegio.agregarAlumno( alumno );
+        alumno = new Alumno( "Kevin Nicholas Luksic Lucero", "20.731.271-1", 20, "INF2241-1"); i++; colegio.agregarAlumno( alumno );
+        profesor = new Profesor( "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "INF2241-1"); k++; colegio.agregarProfesor( profesor );
+        profesor = new Profesor( "Kevin Nicholas Luksic Lucero", "20.731.271-1", 20, "INF2241-1"); k++; colegio.agregarProfesor( profesor );
+        */
         
         while ( aux == 0 ) {
             System.out.println( " -------------------------------------------------------------------" );
@@ -20,62 +27,110 @@ public class Main {
             System.out.println( " -------------------------------------------------------------------" );
             System.out.println( "|  1. REGISTRAR ALUMNO                                              |" );
             System.out.println( "|  2. REGISTRAR PROFESOR                                            |" );
-            System.out.println( "|  3. REGISTRAR ASIGNATURA                                          |" );
-            System.out.println( "|  4. CONSULTAR ALUMNO                                              |" );
-            System.out.println( "|  5. CONSULTAR PROFESOR                                            |" );
-            System.out.println( "|  6. CONSULTAR CURSO                                               |" );
+            System.out.println( "|  3. REGISTRAR CURSO                                               |" );
+            System.out.println( "|  4. MOSTRAR ALUMNOS                                               |" );
+            System.out.println( "|  5. MOSTRAR PROFESORES                                            |" );
+            System.out.println( "|  6. MOSTRAR CURSOS                                                |" );
+            System.out.println( "|  7. CONSULTAR ALUMNO                                              |" );
+            System.out.println( "|  8. CONSULTAR PROFESOR                                            |" );
+            System.out.println( "|  9. CONSULTAR CURSO                                               |" );
             System.out.println( "|  0. CERRAR SESIÓN                                                 |" );
             System.out.println( " -------------------------------------------------------------------" );
             
-            System.out.println( "" );
-            System.out.println( "INGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
-            ingresado = lector.readLine();
-            lector.readLine();
-            opcion = Integer.parseInt( ingresado );
+            System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+            opcion = lector.readLine();
             
-            if ( opcion == 1 ) {
-                System.out.println( "INGRESE LA CANTIDAD DE ALUMNOS QUE DESEA REGISTRAR: ");
-                ingresado = lector.readLine();
-                lector.readLine();
-                numero = Integer.parseInt( ingresado );
-                
-                for ( k = 0; k < numero; k++ ) {
-                    System.out.println( "INGRESE EL NOMBRE DEL ALUMNO " + (k+1) + ": ");
+            switch( opcion ) {
+                case "1":
+                    System.out.println( "\nINGRESE EL NOMBRE DEL ALUMNO " + ( i ) + ": ");
                     nombre = lector.readLine();
-                    lector.readLine();
-                    System.out.println( "INGRESE EL RUT DEL ALUMNO " + (k+1) + ": ");
+                
+                    System.out.println( "INGRESE EL RUT DEL ALUMNO " + ( i ) + ": ");
                     rut = lector.readLine();
-                    lector.readLine();
-                    System.out.println( "INGRESE EL NOMBRE DEL ALUMNO " + (k+1) + ": ");
-                    nombre = lector.readLine();
-                    lector.readLine();
+                
+                    System.out.println( "INGRESE LA EDAD DEL ALUMNO " + ( i ) + ": ");
+                    ingresado = lector.readLine();
+                
                     edad = Integer.parseInt( ingresado );
+                    System.out.println( "INGRESE EL CURSO DEL ALUMNO " + ( i ) + ": ");
+                    curso = lector.readLine();
+                
+                    alumno = new Alumno( nombre, rut, edad, curso );
+                    colegio.agregarAlumno( alumno );
+                    i++;
+                    break;
+            
+                case "2":
+                    System.out.println( "\nINGRESE EL NOMBRE DEL PROFESOR " + ( k ) + ": ");
+                    nombre = lector.readLine();
+                
+                    System.out.println( "INGRESE EL RUT DEL PROFESOR " + ( k ) + ": ");
+                    rut = lector.readLine();
+                
+                    System.out.println( "INGRESE LA EDAD DEL PROFESOR " + ( k ) + ": ");
+                    ingresado = lector.readLine();
+                
+                    edad = Integer.parseInt( ingresado );
+                    System.out.println( "INGRESE EL CURSO DEL PROFESOR " + ( k ) + ": ");
+                    curso = lector.readLine();
+                
+                    profesor = new Profesor( nombre, rut, edad, curso );
+                    colegio.agregarProfesor( profesor );
+                    k++;
+                    break;
+            
+                case "3":
+                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN NO SE ENCUENTRA DISPONIBLE ACTUALMENTE.\n" );
+                    break;
+            
+                case "4":
+                    if ( alumno == null ) {
+                        System.out.println( "\nERROR AL MOSTRAR ALUMNOS. NO HAY NINGÚN ALUMNO REGISTRADO.\n" );
+                    }
+                    else {
+                        colegio.mostrarAlumnos();
+                    }
+                    break;
+            
+                case "5":
+                    if ( profesor == null ) {
+                        System.out.println( "\nERROR AL MOSTRAR PROFESORES. NO HAY NINGÚN PROFESOR REGISTRADO.\n" );
+                    }
+                    else {
+                        colegio.mostrarProfesores();
+                    }
+                    break;
+            
+                case "6":
+                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN NO SE ENCUENTRA DISPONIBLE ACTUALMENTE.\n" );
+                    break;
                     
-                }
-            }
+                case "7":
+                    System.out.println( "\nINGRESE EL RUT DEL ALUMNO QUE DESEA CONSULTAR: " );
+                    rut = lector.readLine();
+                    colegio.consultarAlumno( rut );
+                    break;
+                    
+                case "8":
+                    System.out.println( "\nINGRESE EL RUT DEL PROFESOR QUE DESEA CONSULTAR: " );
+                    rut = lector.readLine();
+                    colegio.consultarProfesor( rut );
+                    break;
+                   
+                case "9":
+                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN NO SE ENCUENTRA DISPONIBLE ACTUALMENTE.\n" );
+                    break;
             
-            if ( opcion == 4 ) {
-                System.out.println( "INGRESE EL RUT DEL ALUMNO QUE DESEA CONSULTAR: ");
-                ingresado = lector.readLine();
-                rut = ingresado;
-                
-                for ( k = 0; perfil[k].getRut() != rut; k++ ) {
-                    if ( rut.areEquals( perfil[k].rut ) )
-                }
-                
-                System.out.println( "ALUMNO " + (k+1) );
-                System.out.println( "Nombre: " + perfil[k].getNombre() );
-                System.out.println( "RUT: " + perfil[k].getRut() );
-                System.out.println( "Edad: " + perfil[k].getEdad() );
-                System.out.println( "Curso: " + perfil[k].getCurso() );
-            }
+                case "0":
+                    System.out.println( "\nSESIÓN CERRADA." );
+                    aux = 1;
+                    break;
             
-            if ( opcion == 0 ) {
-                System.out.println( "SESIÓN CERRADA." );
-                aux = 1;
+                default:
+                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA.\n");
+                    break;
             }
         }
-        */
     }
     
 }
