@@ -1,5 +1,6 @@
 package com.mycompany.proyectoaulavirtual;
 
+import java.io.*;
 import java.util.*;
 
 public class Profesor {
@@ -7,9 +8,9 @@ public class Profesor {
     private String nombre;
     private String rut;
     private int edad;
-    //private String curso;
     private ArrayList<Asignatura> cursosImpartidos = null;
     private Map<String, Asignatura> mapaCursos = null;
+    private Asignatura cursoBuscado;
     
     public Profesor( String nombre, String rut, int edad ) {
         this.nombre = nombre;
@@ -19,17 +20,28 @@ public class Profesor {
         this.mapaCursos = new HashMap();
     }
     
-    public void inscribirAsignatura( Asignatura a ) {
+    public void inscribirCurso( Asignatura a ) {
         this.cursosImpartidos.add( a );
         this.mapaCursos.put( a.getClave(), a );
     }
     
-    public boolean verificarAsignatura( String clave ) {
+    public int contarCursos() {
+        int cont = 0;
+        cont = this.cursosImpartidos.size();
+        return cont;
+    }
+    
+    public boolean verificarCurso( String clave ) {
         if ( this.mapaCursos.containsKey( clave ) ) {
             return true;
         }
         else
             return false;
+    }
+    
+    public String obtenerNombreCurso( String clave ) {
+        this.cursoBuscado = this.mapaCursos.get( clave );
+        return this.cursoBuscado.getNombre();
     }
     
     public void mostrarDatos( int i ) {
@@ -52,9 +64,6 @@ public class Profesor {
     
     public void mostrarDatos() {
         int i;
-        System.out.println( "\n -----------------------------------------------------------------------" );
-        System.out.println( "|                          PROFESOR ENCONTRADO                          |");
-        System.out.println( " -----------------------------------------------------------------------");
         System.out.println( "  NOMBRE: " + this.nombre );
         System.out.println( "  RUT: " + this.rut );
         System.out.println( "  EDAD: " + this.edad );
@@ -71,17 +80,64 @@ public class Profesor {
         System.out.println( " -----------------------------------------------------------------------");
     }
     
+    public void mostrarDatos( int i, FileWriter fichero) throws IOException {
+        int k;
+        fichero.write( "  0" + ( i+1 ) + " | NOMBRE: " + this.nombre +"\n");
+        fichero.write( "     | RUT: " + this.rut +"\n");
+        fichero.write( "     | EDAD: " + this.edad +"\n");
+        if ( !this.cursosImpartidos.isEmpty() ) {
+            fichero.write( "     | CURSOS: " );
+            for ( k = 0; k < ( this.cursosImpartidos.size() - 1 ); k++ ) {
+                fichero.write( this.cursosImpartidos.get( k ).getClave() + " | ");
+            }
+            fichero.write( this.cursosImpartidos.get( k ).getClave() +"\n");
+        }
+        else {
+            fichero.write( "     | CURSOS: No hay cursos inscritos.\n" );
+        }
+        fichero.write( " ------------------------------------------------------------------------\n");
+    }
+    
     public void mostrarCursos() {
-        int i;
         System.out.println( "\n -----------------------------------------------------------------------" );
         System.out.println( "|                            LISTA DE CURSOS                            |");
         System.out.println( " -----------------------------------------------------------------------");
         System.out.println( "  PROFESOR: " + this.nombre + " (" + this.rut + ")" );
         System.out.println( " -----------------------------------------------------------------------");
-        for ( i = 0; i < this.cursosImpartidos.size(); i++ ) {
+        for ( int i = 0; i < this.cursosImpartidos.size(); i++ ) {
             System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + this.cursosImpartidos.get( i ).getNombre() );
             System.out.println( "     | CLAVE: " + this.cursosImpartidos.get( i ).getClave() );
             System.out.println( " -----------------------------------------------------------------------");
+        }
+    }
+    
+    public void mostrarCursos( int rol ) {
+        System.out.println( "\n -----------------------------------------------------------------------" );
+        System.out.println( "|                            LISTA DE CURSOS                            |");
+        System.out.println( " -----------------------------------------------------------------------");
+        for ( int i = 0; i < this.cursosImpartidos.size(); i++ ) {
+            System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + this.cursosImpartidos.get( i ).getNombre() );
+            System.out.println( "     | CLAVE: " + this.cursosImpartidos.get( i ).getClave() );
+            System.out.println( " -----------------------------------------------------------------------");
+        }
+    }
+    
+    public void reemplazarCurso( String clave, Asignatura a ) {
+        for ( int i = 0; i < this.cursosImpartidos.size(); i++ ) {
+            if ( this.cursosImpartidos.get( i ).getClave().equals( clave ) ) {
+                this.mapaCursos.remove( this.cursosImpartidos.get( i ).getClave() );
+                this.cursosImpartidos.set( i, a );
+                this.mapaCursos.put( a.getClave(), a );
+            }
+        }
+    }
+    
+    public void eliminarCurso( String clave ) {
+        for ( int i = 0; i < this.cursosImpartidos.size(); i++ ) {
+            if ( this.cursosImpartidos.get( i ).getClave().equals( clave ) ) {
+                this.cursosImpartidos.remove( i );
+                this.mapaCursos.remove( clave );
+            }
         }
     }
     
