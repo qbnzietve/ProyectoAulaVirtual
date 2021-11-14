@@ -8,23 +8,25 @@ public class Main {
         //Menu menu = new Menu();
         Colegio colegio = new Colegio();
         Usuario usuario = null;
-        Alumno alumno = null; 
+        Persona alumno = null; 
         Apoderado apoderado = null;
-        Profesor profesor = null;
+        Persona profesor = null;
         Asignatura asignatura = null;
+        Nota nota = null;
         //Asignatura[] asignatura = new Asignatura[1000];
         
         boolean salir = false, volver = false;
         boolean saltar = true, iterar = true;
         int edad = 0, rol = 0, aux = 0, i;
-        String opcion, username, rut, nombre, contraseña, clave, ingresado;
-        String direccion = "C:/Users/<SU_NOMBRE_DE_USUARIO>/Desktop/ArchivoTxt"; //<-- INGRESE LA DIRECCIÓN EN LA QUE DESEA GUARDAR EL ARCHIVO .txt
+        double valorNota = 0, valorNota2 = 0;
+        String opcion, username, rut, nombre, contraseña, clave, evaluacion, ingresado;
+        String direccion;
         BufferedReader lector = new BufferedReader( new InputStreamReader( System.in ) );
-        
+        /*
         // ADMINISTRADORES
-        usuario = new Usuario( "beiache", "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "ProyectoAulaVirtual2021", 1 );
+        usuario = new Usuario( "beiache", "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "ProyectoAulaVirtual2021", 5 );
         colegio.registrarUsuario( usuario );
-        
+        */
         while ( !salir ) {
             volver = false;
             iterar = true;
@@ -62,7 +64,7 @@ public class Main {
                                                 System.out.println( "|                            AULA VIRTUAL                            |" );
                                                 System.out.println( " --------------------------------------------------------------------" );
                                                 System.out.println( "|  1. MOSTRAR PERFIL                                                 |" );
-                                                System.out.println( "|  2. MODIFICAR INFORMACIÓN PERSONAL                                 |" );
+                                                System.out.println( "|  2. MODIFICAR INFORMACIÓN PERSONAL (NO DISPONIBLE)                 |" );
                                                 System.out.println( "|  0. CERRAR SESIÓN                                                  |" );
                                                 System.out.println( " --------------------------------------------------------------------" );
                                                 
@@ -72,6 +74,8 @@ public class Main {
                                                 switch( opcion ) {
                                                     case "1":
                                                         colegio.mostrarDatosUsuario( rut, rol );
+                                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                        opcion = lector.readLine();
                                                         break;
                                                         
                                                     case "2":
@@ -104,7 +108,7 @@ public class Main {
                                                 System.out.println( "|  3. CONSULTAR CURSO                                                |" );
                                                 System.out.println( "|  4. INSCRIBIR CURSO                                                |" );
                                                 System.out.println( "|  5. MODIFICAR CURSO                                                |" );
-                                                System.out.println( "|  6. MODIFICAR INFORMACIÓN PERSONAL                                 |" );
+                                                System.out.println( "|  6. MODIFICAR INFORMACIÓN PERSONAL (NO DISPONIBLE)                 |" );
                                                 System.out.println( "|  0. CERRAR SESIÓN                                                  |" );
                                                 System.out.println( " --------------------------------------------------------------------" );
                                     
@@ -114,6 +118,8 @@ public class Main {
                                                 switch( opcion ) {
                                                     case "1":
                                                         colegio.mostrarDatosAlumno( rut );
+                                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                        opcion = lector.readLine();
                                                         break;
                                                 
                                                     case "2":
@@ -121,6 +127,8 @@ public class Main {
                                                             System.out.println( "\nERROR AL MOSTRAR CURSOS. NO ESTÁS INSCRITO EN NINGÚN CURSO." );
                                                         } else {
                                                             colegio.mostrarCursos( rut, rol );
+                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                            opcion = lector.readLine();
                                                         }
                                                         break;
                                             
@@ -132,6 +140,8 @@ public class Main {
                                                             clave = lector.readLine();
                                                             if ( colegio.verificarCursoAlumno( rut, clave ) ) {
                                                                 colegio.consultarCurso( clave );
+                                                                System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                opcion = lector.readLine();
                                                             } else {
                                                                 System.out.println( "\nERROR AL CONSULTAR CURSO. NO ESTÁS INSCRITO EN EL CURSO INGRESADO." );
                                                             }
@@ -426,7 +436,7 @@ public class Main {
                                                 System.out.println( "|  1. MOSTRAR PERFIL                                                 |" );
                                                 System.out.println( "|  2. INSCRIBIR PUPILO                                               |" );
                                                 System.out.println( "|  3. MODIFICAR PUPILO                                               |" );
-                                                System.out.println( "|  4. MODIFICAR INFORMACIÓN PERSONAL                                 |" );
+                                                System.out.println( "|  4. MODIFICAR INFORMACIÓN PERSONAL (NO DISPONIBLE)                 |" );
                                                 System.out.println( "|  0. CERRAR SESIÓN                                                  |" );
                                                 System.out.println( " --------------------------------------------------------------------" );
                                                 
@@ -435,8 +445,9 @@ public class Main {
                                     
                                                 switch( opcion ) {
                                                     case "1":
-                                                        rut = colegio.obtenerRutUsuario( username );
                                                         colegio.mostrarDatosUsuario( rut, rol );
+                                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                        opcion = lector.readLine();
                                                         break;
                                                         
                                                     case "2":
@@ -447,10 +458,10 @@ public class Main {
                                                         iterar = true;
                                                         while ( iterar ) {
                                                             System.out.println( "\nINGRESE EL RUT DE SU PUPILO: " );
-                                                            rut = lector.readLine();
-                                                            if ( colegio.verificarAlumno( rut ) ) {
-                                                                if ( !colegio.verificarApoderadoAlumno( rut ) ) {
-                                                                    colegio.registrarApoderadoAlumno( rut, apoderado );
+                                                            nombre = lector.readLine();
+                                                            if ( colegio.verificarAlumno( nombre ) ) {
+                                                                if ( !colegio.verificarApoderadoAlumno( nombre ) ) {
+                                                                    colegio.registrarApoderadoAlumno( nombre, apoderado );
                                                                     System.out.println( "\nPUPILO REGISTRADO CON ÉXITO." );
                                                                     System.out.println( "\n -----------------------------------------------------" );
                                                                     System.out.println( "|      ¿DESEA REGISTRAR OTRO ALUMNO A SU NOMBRE?      |" );
@@ -558,7 +569,8 @@ public class Main {
                                                 System.out.println( "|  3. CONSULTAR CURSO                                                |" );
                                                 System.out.println( "|  4. INSCRIBIR CURSO                                                |" );
                                                 System.out.println( "|  5. MODIFICAR CURSO                                                |" );
-                                                System.out.println( "|  6. MODIFICAR INFORMACIÓN PERSONAL (NO DISPONIBLE)                 |" );
+                                                System.out.println( "|  6. INGRESAR NOTA ALUMNO                                           |" );
+                                                System.out.println( "|  7. MODIFICAR INFORMACIÓN PERSONAL (NO DISPONIBLE)                 |" );
                                                 System.out.println( "|  0. CERRAR SESIÓN                                                  |" );
                                                 System.out.println( " --------------------------------------------------------------------" );
                                     
@@ -568,6 +580,8 @@ public class Main {
                                                 switch( opcion ) {
                                                     case "1":
                                                         colegio.mostrarDatosProfesor( rut );
+                                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                        opcion = lector.readLine();
                                                         break;
                                                 
                                                     case "2":
@@ -575,6 +589,8 @@ public class Main {
                                                             System.out.println( "\nERROR AL MOSTRAR CURSOS. NO ESTÁS INSCRITO EN NINGÚN CURSO." );
                                                         } else {
                                                             colegio.mostrarCursos( rut, rol );
+                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                            opcion = lector.readLine();
                                                         }
                                                         break;
                                             
@@ -586,10 +602,170 @@ public class Main {
                                                             clave = lector.readLine();
                                                             if ( colegio.verificarCursoProfesor( rut, clave ) ) {
                                                                 colegio.consultarCurso( clave );
+                                                                System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA CONTINUAR: " );
+                                                                opcion = lector.readLine();
+                                                                while ( !volver ) {
+                                                                    iterar = true;
+                                                                    System.out.println( "\n ----------------------------------------------------------------------" );
+                                                                    System.out.println( "|    ¿QUÉ OPERACIÓN DESEA REALIZAR A CONTINUACIÓN SOBRE ESTE CURSO?    |");
+                                                                    System.out.println( " ----------------------------------------------------------------------" );
+                                                                    System.out.println( "|  1. MOSTRAR ALUMNOS SOBRE EL PROMEDIO                                |" );
+                                                                    System.out.println( "|  2. MOSTRAR ALUMNOS BAJO EL PROMEDIO                                 |");
+                                                                    System.out.println( "|  3. MOSTRAR ALUMNOS EN EL PROMEDIO                                   |");
+                                                                    System.out.println( "|  4. MOSTRAR ALUMNOS CON UN PROMEDIO POR ENCIMA DE UN VALOR DADO      |");
+                                                                    System.out.println( "|  5. MOSTRAR ALUMNOS CON UN PROMEDIO POR DEBAJO DE UN VALOR DADO      |");
+                                                                    System.out.println( "|  6. MOSTRAR ALUMNOS CON UN PROMEDIO ENTRE UN RANGO DADO              |");
+                                                                    System.out.println( "|  7. MOSTRAR ALUMNOS EN SITUACIÓN DE REPITENCIA                       |");
+                                                                    System.out.println( "|  8. MOSTRAR ALUMNOS SIN NOTAS REGISTRADAS                            |");
+                                                                    System.out.println( "|  0. VOLVER                                                           |");
+                                                                    System.out.println( " ----------------------------------------------------------------------" );
+                                                                    System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+                                                                    opcion = lector.readLine();
+                                
+                                                                    switch( opcion ) {
+                                                                        case "1":
+                                                                            colegio.mostrarAlumnosSobrePromedio( clave );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "2":
+                                                                            colegio.mostrarAlumnosBajoPromedio( clave );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "3":
+                                                                            colegio.mostrarAlumnosEnElPromedio( clave );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "4":
+                                                                            while ( iterar ) {
+                                                                                System.out.println( "\nINGRESE EL VALOR SOBRE EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                                                                System.out.println( "(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1 Y 6.9): " );
+                                                                                ingresado = lector.readLine();
+                                                                                if ( colegio.esNumero( ingresado ) ) {
+                                                                                    valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                                    if ( valorNota > 6.9 ) {
+                                                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                    } else {
+                                                                                        if ( valorNota < 1 ) {
+                                                                                            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                        } else {
+                                                                                            iterar = false;
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                                                }
+                                                                            }
+                                                                            colegio.mostrarAlumnosSobreValor( clave, valorNota );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "5":
+                                                                            while ( iterar ) {
+                                                                                System.out.println( "\nINGRESE EL VALOR BAJO EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                                                                System.out.println( "(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1.1 Y 7): " );
+                                                                                ingresado = lector.readLine();
+                                                                                if ( colegio.esNumero( ingresado ) ) {
+                                                                                    valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                                    if ( valorNota > 7 ) {
+                                                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                    } else {
+                                                                                        if ( valorNota < 1.1 ) {
+                                                                                            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                        } else {
+                                                                                            iterar = false;
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                                                }
+                                                                            }
+                                                                            colegio.mostrarAlumnosBajoValor( clave, valorNota );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "6":
+                                                                            while ( iterar ) {
+                                                                                System.out.println( "\nINGRESE LOS VALORES ENTRE LOS CUALES SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                                                                System.out.println( "(ADVERTENCIA: LOS VALORES INGRESADOS SE DEBEN ENCONTRAR ENTRE 1 Y 7, Y NO PUEDEN REPETIRSE): " );
+                                                                                System.out.println( "\nVALOR 1: " );
+                                                                                ingresado = lector.readLine();
+                                                                                if ( colegio.esNumero( ingresado ) ) {
+                                                                                    valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                                    if ( valorNota > 7 ) {
+                                                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                    } else {
+                                                                                        if ( valorNota < 1 ) {
+                                                                                            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                        } else {
+                                                                                            iterar = false;
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                                                }
+                                                                            }
+                                                                            iterar = true;
+                                                                            while ( iterar ) {
+                                                                                System.out.println( "\nVALOR 2: " );
+                                                                                ingresado = lector.readLine();
+                                                                                if ( colegio.esNumero( ingresado ) ) {
+                                                                                    valorNota2 = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                                    if ( valorNota2 > 7 ) {
+                                                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                    } else {
+                                                                                        if ( valorNota2 < 1 ) {
+                                                                                            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                        } else {
+                                                                                            if ( valorNota == valorNota2 ) {
+                                                                                                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ES IGUAL AL VALOR ANTERIOR, INTENTE NUEVAMENTE." );
+                                                                                            } else {
+                                                                                                iterar = false;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                                                }
+                                                                            }
+                                                                            colegio.mostrarAlumnosEntreValor( clave, valorNota, valorNota2 );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "7":
+                                                                            colegio.mostrarAlumnosRepitentes( clave );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "8":
+                                                                            colegio.mostrarAlumnosSinNotas( clave );
+                                                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                                                            opcion = lector.readLine();
+                                                                            break;
+                                        
+                                                                        case "0":
+                                                                            volver = true;
+                                                                            break;
+                                        
+                                                                        default:
+                                                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                                            break;
+                                                                    }
+                                                                }
                                                             } else {
                                                                 System.out.println( "\nERROR AL CONSULTAR CURSO. NO ESTÁS INSCRITO EN EL CURSO INGRESADO." );
                                                             }
                                                         }
+                                                        volver = false;
                                                         break;
                                                     
                                                     case "4":
@@ -838,6 +1014,7 @@ public class Main {
                                                                                     break;
                                                                             }
                                                                         }
+                                                                        volver = false;
                                                                         break;
                                         
                                                                     case "0":
@@ -850,10 +1027,128 @@ public class Main {
                                                                 }
                                                             }
                                                         }
+                                                        break;
+                                                        
+                                                    case "6":
+                                                        if ( colegio.hayAlumnos() ) {
+                                                            System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                                                        } else {
+                                                            if ( asignatura == null ) {
+                                                                System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                                                            } else {
+                                                                System.out.println( "\nINGRESE EL RUT DEL ALUMNO AL QUE DESEA AGREGAR UNA NOTA: " );
+                                                                nombre = lector.readLine();
+                                                                if ( colegio.verificarAlumno( nombre ) ) {
+                                                                    if ( colegio.cantidadCursosAlumno( nombre ) == 0 ) {
+                                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                                                    } else {
+                                                                        while ( !volver ) {
+                                                                            colegio.mostrarCursosAlumno( nombre );
+                                                                            System.out.println( "\nINGRESE LA CLAVE DEL CURSO EN EL CUAL DESEA AGREGAR LA NOTA: " );
+                                                                            clave = lector.readLine();
+                                                                            if ( colegio.verificarCursoAlumno( nombre, clave ) ) {
+                                                                                if ( !colegio.verificarCursoProfesor( rut, clave ) ) {
+                                                                                    while ( !volver ) {
+                                                                                        iterar = true;
+                                                                                        System.out.println( "\nINGRESE EL NOMBRE DE LA EVALUACIÓN: " );
+                                                                                        evaluacion = lector.readLine();
+                                                                                        if ( !colegio.verificarEvaluacionAlumno( nombre, clave, evaluacion ) ) {
+                                                                                            while ( iterar ) {
+                                                                                                System.out.println( "\nINGRESE LA NOTA QUE DESEA AGREGAR" );
+                                                                                                System.out.println( "(ADVERTENCIA: LA NOTA DEBE TENER UN VALOR ENTRE 1 Y 7):" );
+                                                                                                ingresado = lector.readLine();
+                                                                                                if ( colegio.esNumero( ingresado ) ) {
+                                                                                                    valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                                                    if ( valorNota > 7 ) {
+                                                                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                                    } else {
+                                                                                                        if ( valorNota < 1 ) {
+                                                                                                            System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                                                        } else {
+                                                                                                            iterar = false;
+                                                                                                        }
+                                                                                                    }
+                                                                                                } else {
+                                                                                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                                                                }
+                                                                                            } 
+                                                                                            nota = new Nota( evaluacion, valorNota );
+                                                                                            colegio.agregarNotaAlumno( nombre, clave, nota );
+                                                                                            System.out.println( "\nLA NOTA FUE AGREGADA CON ÉXITO." );
+                                                                                            iterar = true;
+                                                                                            while ( iterar ) {
+                                                                                                System.out.println( "\n ---------------------------------------------------" );
+                                                                                                System.out.println( "|      ¿DESEA AGREGAR OTRA NOTA EN ESTE CURSO?      |" );
+                                                                                                System.out.println( " ---------------------------------------------------" );
+                                                                                                System.out.println( "|  1. SÍ                                            |" );
+                                                                                                System.out.println( "|  0. NO                                            |" );
+                                                                                                System.out.println( " ---------------------------------------------------" );
+                                                                                                System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                                                                opcion = lector.readLine();
+                                                    
+                                                                                                switch( opcion ) {
+                                                                                                    case "1":
+                                                                                                        iterar = false;
+                                                                                                        break;
+                                                            
+                                                                                                    case "0":
+                                                                                                        iterar = false;
+                                                                                                        volver = true;
+                                                                                                        break;
+                                                            
+                                                                                                    default:
+                                                                                                        System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                                                                        break;
+                                                                                                }
+                                                                                            }
+                                                                                        } else {
+                                                                                            System.out.println( "\nERROR AL AGREGAR NOTA. EL NOMBRE INGRESADO YA ESTÁ ASOCIADO A OTRA EVALUACIÓN DEL MISMO ALUMNO, INTENTE NUEVAMENTE." );
+                                                                                        }
+                                                                                    }
+                                                                                } else {
+                                                                                    System.out.println( "\nERROR AL AGREGAR NOTA. NO ESTÁS INSCRITO EN EL CURSO INGRESADO." );
+                                                                                }
+                                                                            } else {
+                                                                                System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                                                            }
+                                                                            iterar = true;
+                                                                            while ( iterar ) {
+                                                                                System.out.println( "\n ---------------------------------------------------" );
+                                                                                System.out.println( "|  ¿DESEA SEGUIR AGREGANDO NOTAS PARA ESTE ALUMNO?  |" );
+                                                                                System.out.println( " ---------------------------------------------------" );
+                                                                                System.out.println( "|  1. SÍ                                            |" );
+                                                                                System.out.println( "|  0. NO                                            |" );
+                                                                                System.out.println( " ---------------------------------------------------" );
+                                                                                System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                                                opcion = lector.readLine();
+                                                
+                                                                                switch( opcion ) {
+                                                                                    case "1":
+                                                                                        iterar = false;
+                                                                                        volver = false;
+                                                                                        break;
+                                                    
+                                                                                    case "0":
+                                                                                        iterar = false;
+                                                                                        volver = true;
+                                                                                        break;
+                                                        
+                                                                                    default:
+                                                                                        System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                                                        break;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                                                                }
+                                                            }
+                                                        }
                                                         volver = false;
                                                         break;
                                             
-                                                    case "6":
+                                                    case "7":
                                                         System.out.println( "\nOPCIÓN NO DISPONIBLE ACTUALMENTE. SU IMPLEMENTACIÓN ESTÁ PREVISTA PARA FUTURAS ACTUALIZACIONES." );
                                                         break;
                                             
@@ -1204,7 +1499,7 @@ public class Main {
                                 System.out.println( "|  este programa, no dude en consultar el menú de AYUDA disponible    |" );
                                 System.out.println( "|  en el menú principal.                                              |" );
                                 System.out.println( "|                                                                     |" );
-                                System.out.println( "|                                              Versión Actual: 1.0.0  |" );
+                                System.out.println( "|                                              Versión Actual: 1.0.1  |" );
                                 System.out.println( " ---------------------------------------------------------------------" );
             
                                 System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
@@ -1263,7 +1558,40 @@ public class Main {
                         
                         switch( opcion ) {
                             case "1":
-                                colegio.crearArchivotxt( direccion );
+                                while ( iterar ) {
+                                    System.out.println( "\n ----------------------------------------------------------------" );
+                                    System.out.println( "|  ¿DESEA CREAR UN ARCHIVO .txt, CON LOS DATOS DE LOS ALUMNOS Y  |" );
+                                    System.out.println( "|   PROFESORES REGISTRADOS HASTA EL MOMENTO, EN SU ESCRITORIO?   |" );
+                                    System.out.println( " ----------------------------------------------------------------" );
+                                    System.out.println( "|  1. SI                                                         |" );
+                                    System.out.println( "|  0. NO                                                         |" );
+                                    System.out.println( " ----------------------------------------------------------------" );
+                                    System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                    opcion = lector.readLine();
+                                    
+                                    switch( opcion ) {
+                                        case "1":
+                                            System.out.println( "\nINGRESE EL NOMBRE DEL USUARIO DE SU COMPUTADORA:" );
+                                            ingresado = lector.readLine();
+                                            direccion = "C:/Users/" + ingresado + "/Desktop/ListaAlumnosProfesores";
+                                            try {
+                                                colegio.crearArchivotxt( direccion );
+                                                System.out.println( "\n¡ARCHIVO CREADO CON ÉXITO!" );
+                                                iterar = false;
+                                            } catch( FileNotFoundException e ) {
+                                                System.out.println( "\nERROR AL CREAR ARCHIVO. EL NOMBRE DE USUARIO INGRESADO NO SE CORRESPONDE CON EL DE SU COMPUTADORA, INTENTE NUEVAMENTE." );
+                                            }
+                                            break;
+                                        
+                                        case "0":
+                                            iterar = false;
+                                            break;
+                                        
+                                        default:
+                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                            break;  
+                                    }
+                                }
                                 System.out.println( "\nAPLICACIÓN CERRADA CON ÉXITO. ¡GRACIAS POR SU VISITA!");
                                 volver = true;
                                 salir = true;
@@ -1303,11 +1631,13 @@ public class Main {
                 System.out.println( "|  9. MOSTRAR CURSOS PROFESOR                                        |" );
                 System.out.println( "|  10. CONSULTAR ALUMNO                                              |" );
                 System.out.println( "|  11. CONSULTAR PROFESOR                                            |" );
-                System.out.println( "|  12. MODIFICAR CURSO ALUMNO                                        |" );
-                System.out.println( "|  13. MODIFICAR CURSO PROFESOR                                      |" );
-                System.out.println( "|  14. ELIMINAR ALUMNO                                               |" );
-                System.out.println( "|  15. ELIMINAR PROFESOR                                             |" );
-                System.out.println( "|  16. CONSULTAR CURSO                                               |" );
+                System.out.println( "|  12. CONSULTAR CURSO                                               |" );
+                System.out.println( "|  13. MODIFICAR CURSO ALUMNO                                        |" );
+                System.out.println( "|  14. MODIFICAR CURSO PROFESOR                                      |" );
+                System.out.println( "|  15. INGRESAR NOTA ALUMNO                                          |" );
+                System.out.println( "|  16. REVISAR SITUACIÓN ACADÉMICA                                   |" );
+                System.out.println( "|  17. ELIMINAR ALUMNO                                               |" );
+                System.out.println( "|  18. ELIMINAR PROFESOR                                             |" );
                 if ( rol == 5 ) {
                     System.out.println( "|  0. CERRAR SESIÓN                                                  |" );
                 } else {
@@ -1326,18 +1656,36 @@ public class Main {
                                 asignatura = new Asignatura( "Programación Orientada a Objetos", "INF2241-1" ); colegio.inscribirCursoAlumno( "20.522.213-8", asignatura );
                                 asignatura = new Asignatura( "Fundamentos de Probabilidad", "EST2168-2" ); colegio.inscribirCursoAlumno( "20.522.213-8", asignatura );
                                 asignatura = new Asignatura( "Base de Datos", "INF2243-1" ); colegio.inscribirCursoAlumno( "20.522.213-8", asignatura );
+                                nota = new Nota( "Control 1", 7 ); colegio.agregarNotaAlumno( "20.522.213-8", "INF2241-1", nota); nota = new Nota( "Control 2", 5.5 ); colegio.agregarNotaAlumno( "20.522.213-8", "INF2241-1", nota);
+                                nota = new Nota( "Control 1", 7 ); colegio.agregarNotaAlumno( "20.522.213-8", "EST2168-2", nota); nota = new Nota( "Prueba 1", 6.5 ); colegio.agregarNotaAlumno( "20.522.213-8", "EST2168-2", nota);
+                                nota = new Nota( "Control 1", 4.5 ); colegio.agregarNotaAlumno( "20.522.213-8", "INF2243-1", nota); nota = new Nota( "Prueba 1", 5.5 ); colegio.agregarNotaAlumno( "20.522.213-8", "INF2243-1", nota);
+                                if ( !colegio.verificarUsuario( "20.522.213-8" ) ) {
+                                    usuario = new Usuario( "beiache", "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "ProyectoAulaVirtual2021", 2 ); colegio.registrarUsuario( usuario );
+                                }
                             }    
                             if ( !colegio.verificarAlumno( "20.731.271-1" ) ) {
                                 alumno = new Alumno( "Kevin Nicholas Luksic Lucero", "20.731.271-1", 20 ); colegio.agregarAlumno( alumno );
                                 asignatura = new Asignatura( "Programación Orientada a Objetos", "INF2241-1" ); colegio.inscribirCursoAlumno( "20.731.271-1", asignatura );
                                 asignatura = new Asignatura( "Fundamentos de Probabilidad", "EST2168-2" ); colegio.inscribirCursoAlumno( "20.731.271-1", asignatura );
                                 asignatura = new Asignatura( "Base de Datos", "INF2243-1" ); colegio.inscribirCursoAlumno( "20.731.271-1", asignatura );
+                                nota = new Nota( "Control 1", 7 ); colegio.agregarNotaAlumno( "20.731.271-1", "INF2241-1", nota); nota = new Nota( "Control 2", 7 ); colegio.agregarNotaAlumno( "20.731.271-1", "INF2241-1", nota);
+                                nota = new Nota( "Control 1", 4.5 ); colegio.agregarNotaAlumno( "20.731.271-1", "EST2168-2", nota); nota = new Nota( "Prueba 1", 5 ); colegio.agregarNotaAlumno( "20.731.271-1", "EST2168-2", nota);
+                                nota = new Nota( "Control 1", 1 ); colegio.agregarNotaAlumno( "20.731.271-1", "INF2243-1", nota); nota = new Nota( "Prueba 1", 6 ); colegio.agregarNotaAlumno( "20.731.271-1", "INF2243-1", nota);
+                                if ( !colegio.verificarUsuario( "20.731.271-1" ) ) {
+                                    usuario = new Usuario( "qbnzietve", "Kevin Nicholas Luksic Lucero", "20.731.271-1", 20, "ProyectoAulaVirtual2021", 4 ); colegio.registrarUsuario( usuario );
+                                }
                             }
                             if ( !colegio.verificarAlumno( "20.150.642-9" ) ) {
                                 alumno = new Alumno( "Marcelo Ignacio Azocar Madrid", "20.150.642-9", 21 ); colegio.agregarAlumno( alumno );
                                 asignatura = new Asignatura( "Programación Orientada a Objetos", "INF2241-1" ); colegio.inscribirCursoAlumno( "20.150.642-9", asignatura );
                                 asignatura = new Asignatura( "Fundamentos de Probabilidad", "EST2168-2" ); colegio.inscribirCursoAlumno( "20.150.642-9", asignatura );
                                 asignatura = new Asignatura( "Base de Datos", "INF2243-1" ); colegio.inscribirCursoAlumno( "20.150.642-9", asignatura );
+                                nota = new Nota( "Control 1", 7 ); colegio.agregarNotaAlumno( "20.150.642-9", "INF2241-1", nota); nota = new Nota( "Control 2", 1 ); colegio.agregarNotaAlumno( "20.150.642-9", "INF2241-1", nota);
+                                nota = new Nota( "Control 1", 1 ); colegio.agregarNotaAlumno( "20.150.642-9", "EST2168-2", nota); nota = new Nota( "Prueba 1", 3 ); colegio.agregarNotaAlumno( "20.150.642-9", "EST2168-2", nota);
+                                nota = new Nota( "Control 1", 4 ); colegio.agregarNotaAlumno( "20.150.642-9", "INF2243-1", nota); nota = new Nota( "Prueba 1", 7 ); colegio.agregarNotaAlumno( "20.150.642-9", "INF2243-1", nota);
+                                if ( !colegio.verificarUsuario( "20.150.642-9" ) ) {
+                                    usuario = new Usuario( "Marce", "Marcelo Ignacio Azocar Madrid", "20.150.642-9", 21, "ProyectoAulaVirtual2021", 3 ); colegio.registrarUsuario( usuario );
+                                }
                             }
                             if ( !colegio.verificarProfesor( "20.522.213-8" ) ) {
                                 profesor = new Profesor( "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20 ); colegio.agregarProfesor( profesor );
@@ -1694,6 +2042,8 @@ public class Main {
                             System.out.println( "\nERROR AL MOSTRAR ALUMNOS. NO HAY NINGÚN ALUMNO REGISTRADO." );
                         } else {
                             colegio.mostrarAlumnos();
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
                         }
                         break;
             
@@ -1702,6 +2052,8 @@ public class Main {
                             System.out.println( "\nERROR AL MOSTRAR PROFESORES. NO HAY NINGÚN PROFESOR REGISTRADO." );
                         } else {
                             colegio.mostrarProfesores();
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
                         }
                         break;
             
@@ -1712,6 +2064,8 @@ public class Main {
                             System.out.println( "\nINGRESE EL RUT DEL ALUMNO CUYOS CURSOS DESEA MOSTRAR: " );
                             rut = lector.readLine();
                             colegio.mostrarCursosAlumno( rut );
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
                         }
                         break;
                     
@@ -1722,6 +2076,8 @@ public class Main {
                             System.out.println( "\nINGRESE EL RUT DEL PROFESOR CUYOS CURSOS DESEA MOSTRAR: " );
                             rut = lector.readLine();
                             colegio.mostrarCursosProfesor( rut );
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
                         }
                         break;
                     
@@ -1732,6 +2088,8 @@ public class Main {
                             System.out.println( "\nINGRESE EL RUT DEL ALUMNO QUE DESEA CONSULTAR: " );
                             rut = lector.readLine();
                             colegio.consultarAlumno( rut );
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
                         }
                         break;
                     
@@ -1742,10 +2100,181 @@ public class Main {
                             System.out.println( "\nINGRESE EL RUT DEL PROFESOR QUE DESEA CONSULTAR: " );
                             rut = lector.readLine();
                             colegio.consultarProfesor( rut );
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                            opcion = lector.readLine();
+                        }
+                        break;
+                        
+                    case "12":
+                        if ( asignatura == null ) {
+                            System.out.println( "\nERROR AL CONSULTAR CURSO. NO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            System.out.println( "\nINGRESE LA CLAVE DEL CURSO QUE DESEA CONSULTAR: " );
+                            clave = lector.readLine();
+                            colegio.consultarCurso( clave );
+                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA CONTINUAR: " );
+                            opcion = lector.readLine();
+                            while ( !volver ) {
+                                iterar = true;
+                                System.out.println( "\n ----------------------------------------------------------------------" );
+                                System.out.println( "|    ¿QUÉ OPERACIÓN DESEA REALIZAR A CONTINUACIÓN SOBRE ESTE CURSO?    |");
+                                System.out.println( " ----------------------------------------------------------------------" );
+                                System.out.println( "|  1. MOSTRAR ALUMNOS SOBRE EL PROMEDIO                                |" );
+                                System.out.println( "|  2. MOSTRAR ALUMNOS BAJO EL PROMEDIO                                 |");
+                                System.out.println( "|  3. MOSTRAR ALUMNOS EN EL PROMEDIO                                   |");
+                                System.out.println( "|  4. MOSTRAR ALUMNOS CON UN PROMEDIO POR ENCIMA DE UN VALOR DADO      |");
+                                System.out.println( "|  5. MOSTRAR ALUMNOS CON UN PROMEDIO POR DEBAJO DE UN VALOR DADO      |");
+                                System.out.println( "|  6. MOSTRAR ALUMNOS CON UN PROMEDIO ENTRE UN RANGO DADO              |");
+                                System.out.println( "|  7. MOSTRAR ALUMNOS EN SITUACIÓN DE REPITENCIA                       |");
+                                System.out.println( "|  8. MOSTRAR ALUMNOS SIN NOTAS REGISTRADAS                            |");
+                                System.out.println( "|  0. VOLVER                                                           |");
+                                System.out.println( " ----------------------------------------------------------------------" );
+                                System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+                                opcion = lector.readLine();
+                                
+                                switch( opcion ) {
+                                    case "1":
+                                        colegio.mostrarAlumnosSobrePromedio( clave );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "2":
+                                        colegio.mostrarAlumnosBajoPromedio( clave );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "3":
+                                        colegio.mostrarAlumnosEnElPromedio( clave );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "4":
+                                        while ( iterar ) {
+                                            System.out.println( "\nINGRESE EL VALOR SOBRE EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                            System.out.println( "(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1 Y 6.9): " );
+                                            ingresado = lector.readLine();
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 6.9 ) {
+                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1 ) {
+                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosSobreValor( clave, valorNota );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "5":
+                                        while ( iterar ) {
+                                            System.out.println( "\nINGRESE EL VALOR BAJO EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                            System.out.println( "(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1.1 Y 7): " );
+                                            ingresado = lector.readLine();
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 7 ) {
+                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1.1 ) {
+                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosBajoValor( clave, valorNota );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "6":
+                                        while ( iterar ) {
+                                            System.out.println( "\nINGRESE LOS VALORES ENTRE LOS CUALES SE DEBEN ENCONTRAR LOS PROMEDIOS" );
+                                            System.out.println( "(ADVERTENCIA: LOS VALORES INGRESADOS SE DEBEN ENCONTRAR ENTRE 1 Y 7, Y NO PUEDEN REPETIRSE): " );
+                                            System.out.println( "\nVALOR 1: " );
+                                            ingresado = lector.readLine();
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 7 ) {
+                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1 ) {
+                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        iterar = true;
+                                        while ( iterar ) {
+                                            System.out.println( "\nVALOR 2: " );
+                                            ingresado = lector.readLine();
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota2 = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota2 > 7 ) {
+                                                    System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota2 < 1 ) {
+                                                        System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        if ( valorNota == valorNota2 ) {
+                                                            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO ES IGUAL AL VALOR ANTERIOR, INTENTE NUEVAMENTE." );
+                                                        } else {
+                                                            iterar = false;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosEntreValor( clave, valorNota, valorNota2 );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "7":
+                                        colegio.mostrarAlumnosRepitentes( clave );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "8":
+                                        colegio.mostrarAlumnosSinNotas( clave );
+                                        System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                        opcion = lector.readLine();
+                                        break;
+                                        
+                                    case "0":
+                                        volver = true;
+                                        break;
+                                        
+                                    default:
+                                        System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                        break;
+                                }
+                            }
                         }
                         break;
                    
-                    case "12":
+                    case "13":
                         if ( colegio.hayAlumnos() ) {
                             System.out.println( "\nERROR AL MODIFICAR CURSOS DEL ALUMNO. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
                         } else {
@@ -1944,7 +2473,7 @@ public class Main {
                         }
                         break;
                     
-                    case "13":
+                    case "14":
                         if ( colegio.hayProfesores() ) {
                             System.out.println( "\nERROR AL MODIFICAR CURSOS DEL PROFESOR. NO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
                         } else {
@@ -2142,8 +2671,181 @@ public class Main {
                             }
                         }
                         break;
+                        
+                    case "15":
+                        if ( colegio.hayAlumnos() ) {
+                            System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            if ( asignatura == null ) {
+                                System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                            } else {
+                                System.out.println( "\nINGRESE EL RUT DEL ALUMNO AL QUE DESEA AGREGAR UNA NOTA: " );
+                                rut = lector.readLine();
+                                if ( colegio.verificarAlumno( rut ) ) {
+                                    if ( colegio.cantidadCursosAlumno( rut ) == 0 ) {
+                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                    } else {
+                                        while ( !volver ) {
+                                            colegio.mostrarCursosAlumno( rut );
+                                            System.out.println( "\nINGRESE LA CLAVE DEL CURSO EN EL CUAL DESEA AGREGAR LA NOTA: " );
+                                            clave = lector.readLine();
+                                            if ( colegio.verificarCursoAlumno( rut, clave ) ) {
+                                                while ( !volver ) {
+                                                    iterar = true;
+                                                    System.out.println( "\nINGRESE EL NOMBRE DE LA EVALUACIÓN: " );
+                                                    evaluacion = lector.readLine();
+                                                    if ( !colegio.verificarEvaluacionAlumno( rut, clave, evaluacion ) ) {
+                                                        while ( iterar ) {
+                                                            System.out.println( "\nINGRESE LA NOTA QUE DESEA AGREGAR" );
+                                                            System.out.println( "(ADVERTENCIA: LA NOTA DEBE TENER UN VALOR ENTRE 1 Y 7):" );
+                                                            ingresado = lector.readLine();
+                                                            if ( colegio.esNumero( ingresado ) ) {
+                                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                if ( valorNota > 7 ) {
+                                                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                } else {
+                                                                    if ( valorNota < 1 ) {
+                                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                    } else {
+                                                                        iterar = false;
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                            }
+                                                        } 
+                                                        nota = new Nota( evaluacion, valorNota );
+                                                        colegio.agregarNotaAlumno( rut, clave, nota );
+                                                        System.out.println( "\nLA NOTA FUE AGREGADA CON ÉXITO." );
+                                                        iterar = true;
+                                                        while ( iterar ) {
+                                                            System.out.println( "\n ---------------------------------------------------" );
+                                                            System.out.println( "|      ¿DESEA AGREGAR OTRA NOTA EN ESTE CURSO?      |" );
+                                                            System.out.println( " ---------------------------------------------------" );
+                                                            System.out.println( "|  1. SÍ                                            |" );
+                                                            System.out.println( "|  0. NO                                            |" );
+                                                            System.out.println( " ---------------------------------------------------" );
+                                                            System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                            opcion = lector.readLine();
+                                                    
+                                                            switch( opcion ) {
+                                                                case "1":
+                                                                    iterar = false;
+                                                                    break;
+                                                            
+                                                                case "0":
+                                                                    iterar = false;
+                                                                    volver = true;
+                                                                    break;
+                                                            
+                                                                default:
+                                                                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                                    break;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL NOMBRE INGRESADO YA ESTÁ ASOCIADO A OTRA EVALUACIÓN DEL MISMO ALUMNO, INTENTE NUEVAMENTE." );
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                            }
+                                            iterar = true;
+                                            while ( iterar ) {
+                                                System.out.println( "\n ---------------------------------------------------" );
+                                                System.out.println( "|  ¿DESEA SEGUIR AGREGANDO NOTAS PARA ESTE ALUMNO?  |" );
+                                                System.out.println( " ---------------------------------------------------" );
+                                                System.out.println( "|  1. SÍ                                            |" );
+                                                System.out.println( "|  0. NO                                            |" );
+                                                System.out.println( " ---------------------------------------------------" );
+                                                System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                opcion = lector.readLine();
+                                                
+                                                switch( opcion ) {
+                                                    case "1":
+                                                        iterar = false;
+                                                        volver = false;
+                                                        break;
+                                                    
+                                                    case "0":
+                                                        iterar = false;
+                                                        volver = true;
+                                                        break;
+                                                        
+                                                    default:
+                                                        System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                                }
+                            }
+                        }
+                        break;
+                        
+                    case "16":
+                        if ( colegio.hayAlumnos() ) {
+                            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            if ( asignatura == null ) {
+                                System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                            } else {
+                                while ( !volver ) {
+                                    System.out.println( "\n -------------------------------------------------------------------------" );
+                                    System.out.println( "|                 ¿QUÉ SITUACIÓN ACADÉMICA DESEA REVISAR?                 |" );
+                                    System.out.println( " -------------------------------------------------------------------------");
+                                    System.out.println( "|  1. BUSCAR ALUMNO CON PROMEDIO MÁS ALTO                                 |" );
+                                    System.out.println( "|  2. BUSCAR ALUMNO CON PROMEDIO MÁS BAJO                                 |" );
+                                    System.out.println( "|  3. ALUMNOS CON PROMEDIO SOBRESALIENTE                                  |" );
+                                    System.out.println( "|  4. ALUMNOS EN SITUACIÓN DE REPITENCIA                                  |" );
+                                    System.out.println( "|  0. VOLVER                                                              |" );
+                                    System.out.println( " -------------------------------------------------------------------------" );
+                                    System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR" );
+                                    System.out.println( "(OBSERVACIÓN: ESTAS OPERACIONES TRABAJAN EN BASE A LA TOTALIDAD DE CURSOS Y ALUMNOS): " );
+                                    opcion = lector.readLine();
+                                    
+                                    switch( opcion ) {
+                                        case "1":
+                                            colegio.mostrarAlumnoPromedioMasAlto();
+                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                            opcion = lector.readLine();
+                                            break;
+                                            
+                                        case "2":
+                                            colegio.mostrarAlumnoPromedioMasBajo();
+                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                            opcion = lector.readLine();
+                                            break;
+                                            
+                                        case "3":
+                                            colegio.totalAlumnosPromedioSobresaliente();
+                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                            opcion = lector.readLine();
+                                            break;
+                                            
+                                        case "4":
+                                            colegio.totalAlumnosEnSituaciónRepitencia();
+                                            System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
+                                            opcion = lector.readLine();
+                                            break;
+                                            
+                                        case "0":
+                                            volver = true;
+                                            break;
+                                            
+                                        default:
+                                            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                            break;
+                                    }  
+                                }
+                            }
+                        }
+                        break;
                     
-                    case "14":
+                    case "17":
                         if ( colegio.hayAlumnos() ) {
                             System.out.println( "\nERROR AL ELIMINAR ALUMNO. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
                         } else {
@@ -2178,7 +2880,7 @@ public class Main {
                                             break;
                                                             
                                         default:
-                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
                                             break;
                                     }
                                 }
@@ -2188,7 +2890,7 @@ public class Main {
                         }
                         break;
                     
-                    case "15":
+                    case "18":
                         if ( colegio.hayProfesores() ) {
                             System.out.println( "\nERROR AL ELIMINAR PROFESOR. NO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
                         } else {
@@ -2223,23 +2925,13 @@ public class Main {
                                             break;
                                                             
                                         default:
-                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
                                             break;
                                     }
                                 }
                             } else {
                                 System.out.println( "\nERROR AL ELIMINAR PROFESOR. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR." );
                             }
-                        }
-                        break;
-                
-                    case "16":
-                        if ( asignatura == null ) {
-                            System.out.println( "\nERROR AL CONSULTAR CURSO. NO HAY NINGÚN CURSO REGISTRADO." );
-                        } else {
-                            System.out.println( "\nINGRESE LA CLAVE DEL CURSO QUE DESEA CONSULTAR: " );
-                            clave = lector.readLine();
-                            colegio.consultarCurso( clave );
                         }
                         break;
             

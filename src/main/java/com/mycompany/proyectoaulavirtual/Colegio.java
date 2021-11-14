@@ -1,16 +1,16 @@
 package com.mycompany.proyectoaulavirtual;
 
 import java.io.*;
-import java.util.*;     // Se importa la librería de listas
+import java.util.*;
 
 public class Colegio {
     
     private ArrayList<Usuario> listaUsuarios = null;
-    private ArrayList<Alumno> listaAlumnos = null;     
-    private ArrayList<Profesor> listaProfesores = null;    
+    private ArrayList<Persona> listaAlumnos = null;     
+    private ArrayList<Persona> listaProfesores = null;    
     private Map<String, Usuario> mapaUsuarios = null;
-    private Map<String, Alumno> mapaAlumnos = null;
-    private Map<String, Profesor> mapaProfesores = null;
+    private Map<String, Persona> mapaAlumnos = null;
+    private Map<String, Persona> mapaProfesores = null;
     private Usuario usuarioBuscado;
     private Alumno alumnoBuscado;
     private Profesor profesorBuscado;
@@ -42,6 +42,7 @@ public class Colegio {
     // ARCHIVO TXT
     
     public void crearArchivotxt( String direccion ) throws IOException {
+        direccion = direccion.toLowerCase();
         FileWriter fichero = new FileWriter( direccion );
         fichero.write( "\n ------------------------------------------------------------------------\n" );
         fichero.write( "|                            LISTA DE ALUMNOS                            |\n");
@@ -233,7 +234,7 @@ public class Colegio {
     
     // MÉTODOS ALUMNO
     
-    public void agregarAlumno( Alumno a ) {
+    public void agregarAlumno( Persona a ) {
         this.listaAlumnos.add( a );
         this.mapaAlumnos.put( a.getRut(), a );
     }
@@ -360,6 +361,31 @@ public class Colegio {
         }
     }
     
+    public boolean verificarEvaluacionAlumno( String rut, String clave, String evaluacion ) {
+        for ( int i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).getRut().equals( rut ) ) {
+                 return this.listaAlumnos.get( i ).verificarEvaluacion( clave, evaluacion );
+            }
+        }
+        return false;
+    }
+    
+    public void agregarNotaAlumno( String rut, String clave, Nota nota ) {
+        for ( int i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).getRut().equals( rut ) ) {
+                this.listaAlumnos.get( i ).agregarNota( clave, nota );
+            }
+        }
+    }
+    
+    public void mostrarNotasAlumno( String rut ) {
+        for ( int i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).getRut().equals( rut ) ) {
+                this.listaAlumnos.get( i ).mostrarNotas();
+            }
+        }
+    }
+    
     public void reemplazarCursoAlumno( String rut, String clave, Asignatura a ) {
         for ( int i = 0; i < this.listaAlumnos.size(); i++ ) {
             if ( this.listaAlumnos.get(i).getRut().equals( rut ) ) {
@@ -391,7 +417,7 @@ public class Colegio {
     
     // MÉTODOS PROFESOR
     
-    public void agregarProfesor( Profesor a ) {
+    public void agregarProfesor( Persona a ) {
         this.listaProfesores.add( a );
         this.mapaProfesores.put( a.getRut(), a );
     }
@@ -539,6 +565,7 @@ public class Colegio {
         int i, k = 0, aux = 0;
         int contadorProfesor = 0;
         int contadorAlumno = 0;
+        double promedio = 0, valor = 0;
         
         for ( i = 0; i < this.listaProfesores.size(); i++ ) {
             if ( this.listaProfesores.get( i ).verificarCurso( clave ) ) {
@@ -555,8 +582,7 @@ public class Colegio {
         if ( contadorProfesor == 0 ) {
             if ( contadorAlumno == 0 ) {
                 System.out.println( "\nERROR AL CONSULTAR CURSO. LA CLAVE INGRESADA NO SE CORRESPONDE CON LA DE NINGÚN CURSO REGISTRADO." );
-            }
-            else {
+            } else {
                 System.out.println( "\n ------------------------------------------------------------------------" );
                 System.out.println( "|                            CURSO ENCONTRADO                            |");
                 System.out.println( " ------------------------------------------------------------------------");
@@ -576,13 +602,27 @@ public class Colegio {
                 System.out.println( " ------------------------------------------------------------------------");
                 for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
                     if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
-                        this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( k );
+                        this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                        System.out.println( " ------------------------------------------------------------------------");
+                        valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                        if ( valor != 0 ) {
+                            promedio = promedio + valor;
+                        } else {
+                            contadorAlumno--;
+                        }
                         k++;
                     }
                 }
+                if ( promedio > 0 && contadorAlumno > 0 ) {
+                    promedio = Math.round( ( promedio / contadorAlumno ) * 10 ) / 10d;
+                    System.out.println( "  PROMEDIO CURSO: " + promedio );
+                    System.out.println( " ------------------------------------------------------------------------");
+                } else {
+                    System.out.println( "  PROMEDIO CURSO: -" );
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
             }
-        }
-        else {
+        } else {
             System.out.println( "\n ------------------------------------------------------------------------" );
             System.out.println( "|                            CURSO ENCONTRADO                            |");
             System.out.println( " ------------------------------------------------------------------------");
@@ -599,6 +639,7 @@ public class Colegio {
             for ( i = 0; i < this.listaProfesores.size(); i++ ) {
                 if ( this.listaProfesores.get( i ).verificarCurso( clave ) ) {
                     this.listaProfesores.get( i ).mostrarProfesorAsignatura( k );
+                    System.out.println( " ------------------------------------------------------------------------");
                     k++;
                 }
             }
@@ -608,17 +649,666 @@ public class Colegio {
                 System.out.println( " ------------------------------------------------------------------------");
                 System.out.println( "  No hay alumnos inscritos en este curso." );
                 System.out.println( " ------------------------------------------------------------------------");
-            }
-            else {
+                System.out.println( "  PROMEDIO CURSO: -" );
+                System.out.println( " ------------------------------------------------------------------------");
+            } else {
                 System.out.println( "  LISTA DE ALUMNOS " );
                 System.out.println( " ------------------------------------------------------------------------");
                 for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
                     if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
-                        this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( k );
+                        this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                        System.out.println( " ------------------------------------------------------------------------");
+                        valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                        if ( valor != 0 ) {
+                            promedio = promedio + valor;
+                        } else {
+                            contadorAlumno--;
+                        }
+                        k++;
+                    }
+                }
+                if ( promedio > 0 && contadorAlumno > 0 ) {
+                    promedio = Math.round( ( promedio / contadorAlumno ) * 10 ) / 10d;
+                    System.out.println( "  PROMEDIO CURSO: " + promedio );
+                    System.out.println( " ------------------------------------------------------------------------");
+                } else {
+                    System.out.println( "  PROMEDIO CURSO: -" );
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            }
+        }
+    }
+    
+    public void mostrarAlumnosSobrePromedio( String clave ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0, promedio = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor != 0 ) {
+                        promedio = promedio + valor;
+                    } else {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( promedio > 0 && contadorAlumno > 0 ) {
+                promedio = Math.round( ( promedio / contadorAlumno ) * 10 ) / 10d;
+                System.out.println( "\n -------------------------------------------------------------------------" );
+                System.out.println( "|                        ALUMNOS SOBRE EL PROMEDIO                        |");
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.println( "  PROMEDIO CURSO: " + promedio );
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " -------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor > promedio ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " -------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " -------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosBajoPromedio( String clave ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0, promedio = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor != 0 ) {
+                        promedio = promedio + valor;
+                    } else {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( promedio > 0 && contadorAlumno > 0 ) {
+                promedio = Math.round( ( promedio / contadorAlumno ) * 10 ) / 10d;
+                System.out.println( "\n ------------------------------------------------------------------------" );
+                System.out.println( "|                        ALUMNOS BAJO EL PROMEDIO                        |");
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  PROMEDIO CURSO: " + promedio );
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " ------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor < promedio ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " ------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosEnElPromedio( String clave ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0, promedio = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor != 0 ) {
+                        promedio = promedio + valor;
+                    } else {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( promedio > 0 && contadorAlumno > 0 ) {
+                promedio = Math.round( ( promedio / contadorAlumno ) * 10 ) / 10d;
+                System.out.println( "\n ------------------------------------------------------------------------" );
+                System.out.println( "|                         ALUMNOS EN EL PROMEDIO                         |");
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  PROMEDIO CURSO: " + promedio );
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " ------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor == promedio ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " ------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosSobreValor( String clave, double valorNota ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor == 0 ) {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( contadorAlumno > 0 ) {
+                System.out.println( "\n ------------------------------------------------------------------------" );
+                System.out.println( "|                        ALUMNOS SOBRE VALOR DADO                        |");
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  VALOR INGRESADO: " + valorNota );
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " ------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor > valorNota ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " ------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosBajoValor( String clave, double valorNota ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor == 0 ) {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( contadorAlumno > 0 ) {
+                System.out.println( "\n -------------------------------------------------------------------------" );
+                System.out.println( "|                         ALUMNOS BAJO VALOR DADO                         |");
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.println( "  VALOR INGRESADO: " + valorNota );
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " -------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor < valorNota ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " -------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " -------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosEntreValor( String clave, double valor1, double valor2 ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0;
+        double menor = 0, mayor = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor == 0 ) {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( contadorAlumno > 0 ) {
+                menor = valor1;
+                if ( menor < valor2 ) {
+                    mayor = valor2;
+                } else {
+                    menor = valor2;
+                    mayor = valor1;
+                }
+                System.out.println( "\n ------------------------------------------------------------------------" );
+                System.out.println( "|                     ALUMNOS ENTRE RANGO DE VALORES                     |");
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  RANGO DE VALORES: [ " + menor + " - " + mayor + " ]" );
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " ------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor >= menor && valor <= mayor ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " ------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosRepitentes( String clave ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor == 0 ) {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( contadorAlumno > 0 ) {
+                System.out.println( "\n ------------------------------------------------------------------------" );
+                System.out.println( "|                   ALUMNOS EN SITUACIÓN DE REPITENCIA                   |");
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  PROMEDIO APROBACIÓN: 4.0" );
+                System.out.println( " ------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " ------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        valor = Math.round( valor * 10 ) / 10d;
+                        if ( valor < 4.0 ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " ------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " ------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnosSinNotas( String clave ) {
+        int i = 0, k = 0, aux = 0;
+        int contadorAlumno = 0;
+        double valor = 0;
+        
+        for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+            if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                contadorAlumno++;
+            }
+        }
+        
+        if ( contadorAlumno == 0 ) {
+            System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS INSCRITOS EN ESTE CURSO." );
+        } else {
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                    valor = this.listaAlumnos.get( i ). calcularPromedioAsignatura( clave );
+                    if ( valor == 0 ) {
+                        contadorAlumno--;
+                    }
+                }
+            }
+            if ( contadorAlumno > 0 ) {
+                System.out.println( "\n -------------------------------------------------------------------------" );
+                System.out.println( "|                      ALUMNOS SIN NOTAS REGISTRADAS                      |");
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.print( "  CURSO: " );
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) && aux == 0 ) {
+                        this.listaAlumnos.get( i ).mostrarDatosAsignatura( clave );
+                        aux++;
+                    }
+                }
+                System.out.println( " -------------------------------------------------------------------------");
+                System.out.println( "  LISTA DE ALUMNOS ENCONTRADOS " );
+                System.out.println( " -------------------------------------------------------------------------");
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    if ( this.listaAlumnos.get( i ).verificarCurso( clave ) ) {
+                        valor = this.listaAlumnos.get( i ).calcularPromedioAsignatura( clave );
+                        if ( valor == 0 ) {
+                            this.listaAlumnos.get( i ).mostrarAlumnoAsignatura( clave, k );
+                            System.out.println( " -------------------------------------------------------------------------");
+                            k++;
+                        }
+                    }
+                }
+                if ( k == 0 ) {
+                    System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                    System.out.println( " -------------------------------------------------------------------------");
+                }
+            } else {
+                System.out.println( "\nERROR AL EVALUAR PROMEDIOS. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN ESTE CURSO." );
+            }
+        }
+    }
+    
+    public void mostrarAlumnoPromedioMasAlto() {
+        int i = 0, k = 0, repeticiones = -1;
+        double promedioMasAlto = 0, promedio = 0;
+        
+        while ( promedioMasAlto == 0 && i < this.listaAlumnos.size() ) {
+            promedioMasAlto = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+            i++;
+        }
+        
+        if ( promedioMasAlto != 0 ) {
+            System.out.println( "\n -------------------------------------------------------------------------" );
+            System.out.println( "|                 ALUMNO(S) CON PROMEDIO GENERAL MÁS ALTO                 |");
+            System.out.println( " -------------------------------------------------------------------------");
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                if ( promedio > promedioMasAlto && promedio != 0 ) {
+                    promedioMasAlto = promedio;
+                } else {
+                    if ( promedio == promedioMasAlto ) {
+                        repeticiones++;
+                    }
+                }
+            }
+            System.out.println("repeticiones = " + repeticiones);
+            if ( repeticiones != 0 ) {
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                    if ( promedio == promedioMasAlto ) {
+                        this.listaAlumnos.get( i ).mostrarDatos( k );
+                        k++;
+                    }
+                }
+            } else {
+                for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                    promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                    if ( promedio == promedioMasAlto ) {
+                        this.listaAlumnos.get( i ).mostrarDatos();
+                    }
+                }
+            }
+        } else {
+            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN EL SISTEMA." );
+        }
+    }
+    
+    public void mostrarAlumnoPromedioMasBajo() {
+        int i = 0;
+        double promedioMasBajo = 0, promedio = 0;
+        
+        while ( promedioMasBajo == 0 && i < this.listaAlumnos.size() ) {
+            promedioMasBajo = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+            i++;
+        }
+        
+        if ( promedioMasBajo != 0 ) {
+            System.out.println( "\n -------------------------------------------------------------------------" );
+            System.out.println( "|                 ALUMNO(S) CON PROMEDIO GENERAL MÁS BAJO                 |");
+            System.out.println( " -------------------------------------------------------------------------");
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                if ( promedio < promedioMasBajo && promedio != 0 ) {
+                    promedioMasBajo = promedio;
+                }
+            }
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                if ( promedio == promedioMasBajo ) {
+                    this.listaAlumnos.get( i ).mostrarDatos();
+                }
+            }
+        } else {
+            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN EL SISTEMA." );
+        }
+    }
+    
+    public void totalAlumnosPromedioSobresaliente() {
+        int i = 0, k = 0, valor = 0, promediosSobresalientes = 0;
+        double promedio = 0;
+        
+        while ( promedio == 0  && i < this.listaAlumnos.size() ) {
+            promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+            i++;
+        }
+        
+        if ( promedio != 0 ) {
+            System.out.println( "\n ------------------------------------------------------------------------" );
+            System.out.println( "|                   ALUMNOS CON PROMEDIO SOBRESALIENTE                   |");
+            System.out.println( " ------------------------------------------------------------------------");
+            System.out.println( "  PROMEDIO REQUERIDO: 6.0 Ó SUPERIOR" );
+            System.out.println( " ------------------------------------------------------------------------");
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                if ( promedio != 0 ) {
+                    valor = this.listaAlumnos.get( i ).promediosSobresalientes( k );
+                    if ( valor != 0 ) {
+                        System.out.println( "  NÚMERO DE CASOS ALUMNO: " + valor );
+                        System.out.println( " ------------------------------------------------------------------------");
+                        promediosSobresalientes = promediosSobresalientes + valor;
                         k++;
                     }
                 }
             }
+            if ( promediosSobresalientes != 0 ) {
+                System.out.println( "  NÚMERO TOTAL DE CASOS: " + promediosSobresalientes );
+                System.out.println( " ------------------------------------------------------------------------");
+            } else {
+                System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                System.out.println( " ------------------------------------------------------------------------");
+            }
+        } else {
+            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN EL SISTEMA." );
+        }
+    }
+    
+    public void totalAlumnosEnSituaciónRepitencia() {
+        int i = 0, k = 0, valor = 0, cursosEnRiesgo = 0;
+        double promedio = 0;
+        
+        while ( promedio == 0  && i < this.listaAlumnos.size() ) {
+            promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+            i++;
+        }
+        
+        if ( promedio != 0 ) {
+            System.out.println( "\n ------------------------------------------------------------------------" );
+            System.out.println( "|                   ALUMNOS EN SITUACIÓN DE REPITENCIA                   |");
+            System.out.println( " ------------------------------------------------------------------------");
+            System.out.println( "  PROMEDIO APROBACIÓN: 4.0" );
+            System.out.println( " ------------------------------------------------------------------------");
+            for ( i = 0; i < this.listaAlumnos.size(); i++ ) {
+                promedio = this.listaAlumnos.get( i ).calcularPromedioGeneral();
+                if ( promedio != 0 ) {
+                    valor = this.listaAlumnos.get( i ).cursosEnRiesgo( k );
+                    if ( valor != 0 ) {
+                        System.out.println( "  NÚMERO DE CASOS ALUMNO: " + valor );
+                        System.out.println( " ------------------------------------------------------------------------");
+                        cursosEnRiesgo = cursosEnRiesgo + valor;
+                        k++;
+                    }
+                }
+            }
+            if ( cursosEnRiesgo != 0 ) {
+                System.out.println( "  NÚMERO TOTAL DE CASOS: " + cursosEnRiesgo );
+                System.out.println( " ------------------------------------------------------------------------");
+            } else {
+                System.out.println( "  No hay alumnos que cumplan con los requisitos de búsqueda.");
+                System.out.println( " ------------------------------------------------------------------------");
+            }
+        } else {
+            System.out.println( "\nERROR AL REVISAR SITUACIÓN ACADÉMICA. NO HAY ALUMNOS CON NOTAS REGISTRADAS EN EL SISTEMA." );
         }
     }
     
