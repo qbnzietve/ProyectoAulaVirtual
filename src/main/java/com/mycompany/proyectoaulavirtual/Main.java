@@ -1,5 +1,6 @@
 package com.mycompany.proyectoaulavirtual;
 
+import interfaz.*;
 import java.io.*;
 
 public class Main {
@@ -27,6 +28,9 @@ public class Main {
         usuario = new Usuario( "beiache", "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "ProyectoAulaVirtual2021", 5 );
         colegio.registrarUsuario( usuario );
         */
+        
+        new MenuPrincipal().setVisible( true );
+        /*
         while ( !salir ) {
             volver = false;
             iterar = true;
@@ -1499,7 +1503,7 @@ public class Main {
                                 System.out.println( "|  este programa, no dude en consultar el menú de AYUDA disponible    |" );
                                 System.out.println( "|  en el menú principal.                                              |" );
                                 System.out.println( "|                                                                     |" );
-                                System.out.println( "|                                              Versión Actual: 1.0.1  |" );
+                                System.out.println( "|                                              Versión Actual: 1.1.0  |" );
                                 System.out.println( " ---------------------------------------------------------------------" );
             
                                 System.out.println( "\nINGRESE CUALQUIER CARÁCTER PARA REGRESAR: " );
@@ -1614,9 +1618,12 @@ public class Main {
                     break;
             }
             
+            new MenuAdministrador().setVisible( true );
+            /*
             while ( !saltar ) {
                 volver = false;
                 iterar = true;
+                
                 System.out.println( "\n --------------------------------------------------------------------" );
                 System.out.println( "|                            AULA VIRTUAL                            |" );
                 System.out.println( " --------------------------------------------------------------------" );
@@ -1647,7 +1654,7 @@ public class Main {
             
                 System.out.println( "\nINGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
                 opcion = lector.readLine();
-            
+                
                 switch( opcion ) {
                     case "1":
                         if ( aux == 0 ) {
@@ -2951,6 +2958,7 @@ public class Main {
                 }
             }
         }
+*/
     }
     
 }

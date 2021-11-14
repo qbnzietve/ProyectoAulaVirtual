@@ -1,4 +1,4 @@
-package com.mycompany.proyectoaulavirtual;
+package interfaz;
 
 import java.io.*;
 

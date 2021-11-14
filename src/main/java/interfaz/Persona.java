@@ -1,4 +1,4 @@
-package com.mycompany.proyectoaulavirtual;
+package interfaz;
 
 public abstract class Persona implements ManejoDatos {
     
