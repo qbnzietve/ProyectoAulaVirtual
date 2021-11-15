@@ -39,6 +39,18 @@ public class Asignatura {
         System.out.println( this.notas.get( i ).getNota() );
     }
     
+    public void mostrarDatosAlumno( int i, String nombre, String rut ) {
+        double promedio = 0;
+        promedio = this.calcularPromedio();
+        ListaCursosAlumno p = new ListaCursosAlumno();
+        p.mostrarDatos( i, nombre, rut, this.nombre, this.clave, this.notas, promedio );
+    }
+    
+    public void mostrarDatosProfesor( int i, String nombre, String rut ) {
+        ListaCursosProfesor p = new ListaCursosProfesor();
+        p.mostrarDatos( i, nombre, rut, this.nombre, this.clave );
+    }
+    
     public double calcularPromedio() {
         int i = 0;
         double promedio = 0;

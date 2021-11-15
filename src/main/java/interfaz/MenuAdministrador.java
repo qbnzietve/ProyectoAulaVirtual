@@ -1,5 +1,8 @@
 package interfaz;
 
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class MenuAdministrador extends javax.swing.JFrame {
@@ -16,6 +19,9 @@ public class MenuAdministrador extends javax.swing.JFrame {
     private String nombre;
     private String ingresado;
     private int edad;
+    private String clave;
+    private double valorNota, valorNota2;
+    private String evaluacion;
     
     private boolean volver = false;
     private boolean iterar = true;
@@ -57,6 +63,8 @@ public class MenuAdministrador extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -297,11 +305,11 @@ public class MenuAdministrador extends javax.swing.JFrame {
                     asignatura = new Asignatura( "Base de Datos", "INF2243-1" ); colegio.inscribirCursoProfesor( "20.150.642-9", asignatura );
                     aux++;
                 }
-                if ( aux > 0 ) {
+                //if ( aux > 0 ) {
                     JOptionPane.showMessageDialog( null, "VALORES DE PRUEBA DESBLOQUEADOS CON ÉXITO." );
-                } else {
+                /*} else {
                     JOptionPane.showMessageDialog( null, "ERROR AL DESBLOQUEAR LOS VALORES DE PRUEBA.\nLOS VALORES DE PRUEBA YA SE ENCUENTRAN DESBLOQUEADOS." );
-                }
+                }*/
                 break;
                 
             case "2":
@@ -363,24 +371,114 @@ public class MenuAdministrador extends javax.swing.JFrame {
                 break;
                 
             case "4":
+                if ( colegio.hayAlumnos() ) {
+                    JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL ALUMNO EN UN CURSO. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                } else {
+                    rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO AL QUE DESEA INSCRIBIR EN UN CURSO:" );
+                    if ( colegio.verificarAlumno( rut ) ) {
+                        while ( !volver ) {
+                            iterar = true;
+                            clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO:" );
+                            if ( !colegio.verificarCursoAlumno( rut, clave ) ) {
+                                nombre = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DEL CURSO:" );
+                                asignatura = new Asignatura( nombre, clave );
+                                colegio.inscribirCursoAlumno( rut, asignatura );
+                                while ( iterar ) {
+                                    if ( JOptionPane.showConfirmDialog( null, "¿DESEA INSCRIBIR OTRO CURSO PARA ESTE ALUMNO?" ) == 1 ) {
+                                        volver = true;
+                                        iterar = false;
+                                    } else {
+                                        iterar = false;
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL ALUMNO EN UN CURSO.\nLA CLAVE INGRESADA YA ESTÁ ASOCIADA A OTRO CURSO DEL MISMO ALUMNO." );
+                                while ( iterar ) {
+                                    if ( JOptionPane.showConfirmDialog( null, "¿DESEA INSCRIBIR OTRO CURSO PARA ESTE ALUMNO?" ) == 1 ) {
+                                        volver = true;
+                                        iterar = false;
+                                    } else {
+                                        iterar = false;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL ALUMNO EN UN CURSO.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                    }
+                }
                 break;
             
             case "5":
+                if ( colegio.hayProfesores() ) {
+                    JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL PROFESOR EN UN CURSO. NO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
+                } else {
+                    rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL PROFESOR AL QUE DESEA INSCRIBIR EN UN CURSO:" );
+                    if ( colegio.verificarProfesor( rut ) ) {
+                        while ( !volver ) {
+                            iterar = true;
+                            clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO:" );
+                            if ( !colegio.verificarCursoProfesor( rut, clave ) ) {
+                                nombre = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DEL CURSO:" );
+                                asignatura = new Asignatura( nombre, clave );
+                                colegio.inscribirCursoProfesor( rut, asignatura );
+                                while ( iterar ) {
+                                    if ( JOptionPane.showConfirmDialog( null, "¿DESEA INSCRIBIR OTRO CURSO PARA ESTE PROFESOR?" ) == 1 ) {
+                                        volver = true;
+                                        iterar = false;
+                                    } else {
+                                        iterar = false;
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL PROFESOR EN UN CURSO.\nLA CLAVE INGRESADA YA ESTÁ ASOCIADA A OTRO CURSO DEL MISMO PROFESOR." );
+                                while ( iterar ) {
+                                    if ( JOptionPane.showConfirmDialog( null, "¿DESEA INSCRIBIR OTRO CURSO PARA ESTE PROFESOR?" ) == 1 ) {
+                                        volver = true;
+                                        iterar = false;
+                                    } else {
+                                        iterar = false;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog( null, "ERROR AL INSCRIBIR AL PROFESOR EN UN CURSO.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR." );
+                    }
+                }
                 break;
             
             case "6":
                 if ( colegio.hayAlumnos() ) {
-                    JOptionPane.showMessageDialog( null, "\nERROR AL MOSTRAR ALUMNOS.\nNO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                    JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR ALUMNOS.\nNO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
                 } else {
-                    colegio.mostrarAlumnos();
+                    colegio.mostrarAlumnosVentana();
                 }
                 break;
                 
             case "7":
                 if ( colegio.hayProfesores() ) {
-                    JOptionPane.showMessageDialog( null, "\nERROR AL MOSTRAR PROFESORES.\nNO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
+                    JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR PROFESORES.\nNO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
                 } else {
-                    colegio.mostrarProfesores();
+                    colegio.mostrarProfesoresVentana();
+                }
+                break;
+                
+            case "8":
+                if ( colegio.hayAlumnos() ) {
+                    JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR CURSOS DEL ALUMNO.\nNO HAY NINGÚN ALUMNO REGISTRADO." );
+                } else {
+                    rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO CUYOS CURSOS DESEA MOSTRAR:" );
+                    colegio.mostrarCursosAlumnoVentana( rut );
+                }
+                break;
+                
+            case "9":
+                if ( colegio.hayProfesores() ) {
+                    JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR CURSOS DEL PROFESOR.\nNO HAY NINGÚN PROFESOR REGISTRADO." );
+                } else {
+                    rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL PROFESOR CUYOS CURSOS DESEA MOSTRAR:" );
+                    colegio.mostrarCursosProfesorVentana( rut );
                 }
                 break;
                 
@@ -389,7 +487,7 @@ public class MenuAdministrador extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog( null, "ERROR AL CONSULTAR ALUMNO.\nNO HAY NINGÚN ALUMNO REGISTRADO." );
                 } else {
                     rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO QUE DESEA CONSULTAR:" );
-                    colegio.consultarAlumno( rut );
+                    colegio.consultarAlumnoVentana( rut );
                 }
                 break;
                 
@@ -398,15 +496,821 @@ public class MenuAdministrador extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog( null, "ERROR AL CONSULTAR PROFESOR.\nNO HAY NINGÚN PROFESOR REGISTRADO." );
                 } else {
                     rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL PROFESOR QUE DESEA CONSULTAR:" );
-                    colegio.consultarProfesor( rut );
+                    colegio.consultarProfesorVentana( rut );
                 }
+                break;
+                
+            case "12":
+                if ( asignatura == null ) {
+                            JOptionPane.showMessageDialog( null, "ERROR AL CONSULTAR CURSO.\nNO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO QUE DESEA CONSULTAR: " );
+                            colegio.consultarCurso( clave );
+                            this.setVisible( false );
+                            JOptionPane.showMessageDialog( null, "EL MENÚ NECESARIO PARA SEGUIR TRABAJANDO SERÁ IMPRESO EN CONSOLA.\nPOR FAVOR, NO CIERRE ESTA VENTANA O CUALQUIER VENTANA SIGUIENTE PARA PODER INTERACTUAR CON ELLAS MÁS TARDE." );
+                            while ( !volver ) {
+                                iterar = true;
+                                System.out.println( "\n ----------------------------------------------------------------------" );
+                                System.out.println( "|    ¿QUÉ OPERACIÓN DESEA REALIZAR A CONTINUACIÓN SOBRE ESTE CURSO?    |");
+                                System.out.println( " ----------------------------------------------------------------------" );
+                                System.out.println( "|  1. MOSTRAR ALUMNOS SOBRE EL PROMEDIO                                |" );
+                                System.out.println( "|  2. MOSTRAR ALUMNOS BAJO EL PROMEDIO                                 |");
+                                System.out.println( "|  3. MOSTRAR ALUMNOS EN EL PROMEDIO                                   |");
+                                System.out.println( "|  4. MOSTRAR ALUMNOS CON UN PROMEDIO POR ENCIMA DE UN VALOR DADO      |");
+                                System.out.println( "|  5. MOSTRAR ALUMNOS CON UN PROMEDIO POR DEBAJO DE UN VALOR DADO      |");
+                                System.out.println( "|  6. MOSTRAR ALUMNOS CON UN PROMEDIO ENTRE UN RANGO DADO              |");
+                                System.out.println( "|  7. MOSTRAR ALUMNOS EN SITUACIÓN DE REPITENCIA                       |");
+                                System.out.println( "|  8. MOSTRAR ALUMNOS SIN NOTAS REGISTRADAS                            |");
+                                System.out.println( "|  0. VOLVER                                                           |");
+                                System.out.println( " ----------------------------------------------------------------------" );
+                                opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+                                
+                                switch( opcion ) {
+                                    case "1":
+                                        colegio.mostrarAlumnosSobrePromedio( clave );
+                                        break;
+                                        
+                                    case "2":
+                                        colegio.mostrarAlumnosBajoPromedio( clave );
+                                        break;
+                                        
+                                    case "3":
+                                        colegio.mostrarAlumnosEnElPromedio( clave );
+                                        break;
+                                        
+                                    case "4":
+                                        while ( iterar ) {
+                                            ingresado = JOptionPane.showInputDialog( null, "INGRESE EL VALOR SOBRE EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS\n(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1 Y 6.9): " );
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 6.9 ) {
+                                                    JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1 ) {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosSobreValor( clave, valorNota );
+                                        break;
+                                        
+                                    case "5":
+                                        while ( iterar ) {
+                                            ingresado = JOptionPane.showInputDialog( null, "INGRESE EL VALOR BAJO EL CUAL SE DEBEN ENCONTRAR LOS PROMEDIOS\n(ADVERTENCIA: EL VALOR INGRESADO SE DEBE ENCONTRAR ENTRE 1.1 Y 7): " );
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 7 ) {
+                                                    JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1.1 ) {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosBajoValor( clave, valorNota );
+                                        break;
+                                        
+                                    case "6":
+                                        while ( iterar ) {
+                                            ingresado = JOptionPane.showInputDialog( null, "INGRESE LOS VALORES ENTRE LOS CUALES SE DEBEN ENCONTRAR LOS PROMEDIOS\n(ADVERTENCIA: LOS VALORES INGRESADOS SE DEBEN ENCONTRAR ENTRE 1 Y 7, Y NO PUEDEN REPETIRSE):\nVALOR 1:" );
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota > 7 ) {
+                                                    JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota < 1 ) {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        iterar = false;
+                                                    }
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        iterar = true;
+                                        while ( iterar ) {
+                                            ingresado = JOptionPane.showInputDialog( null, "VALOR 2:" );
+                                            if ( colegio.esNumero( ingresado ) ) {
+                                                valorNota2 = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                if ( valorNota2 > 7 ) {
+                                                    JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                } else {
+                                                    if ( valorNota2 < 1 ) {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                    } else {
+                                                        if ( valorNota == valorNota2 ) {
+                                                            JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO ES IGUAL AL VALOR ANTERIOR, INTENTE NUEVAMENTE." );
+                                                        } else {
+                                                            iterar = false;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EVALUAR PROMEDIOS.\nEL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                            }
+                                        }
+                                        colegio.mostrarAlumnosEntreValor( clave, valorNota, valorNota2 );
+                                        break;
+                                        
+                                    case "7":
+                                        colegio.mostrarAlumnosRepitentes( clave );
+                                        break;
+                                        
+                                    case "8":
+                                        colegio.mostrarAlumnosSinNotas( clave );
+                                        break;
+                                        
+                                    case "0":
+                                        volver = true;
+                                        this.setVisible( true );
+                                        JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );
+                                        break;
+                                        
+                                    default:
+                                        JOptionPane.showMessageDialog( null, "ERROR AL EJECUTAR LA OPCIÓN.\nLA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                        break;
+                                }
+                            }
+                        }
+                this.setVisible( true );
+                break;
+                
+            case "13":
+                if ( colegio.hayAlumnos() ) {
+                            JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL ALUMNO.\nNO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO CUYOS CURSOS DESEA MODIFICAR:" );
+                            if ( colegio.verificarAlumno( rut ) ) {
+                                if ( colegio.cantidadCursosAlumno( rut ) == 0 ) {
+                                    JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL ALUMNO.\nEL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                } else {
+                                    while ( !volver ) {
+                                        this.setVisible( false );
+                                        JOptionPane.showMessageDialog( null, "EL MENÚ NECESARIO PARA SEGUIR TRABAJANDO SERÁ IMPRESO EN CONSOLA.\nPOR FAVOR, NO CIERRE ESTA VENTANA O CUALQUIER VENTANA SIGUIENTE PARA PODER INTERACTUAR CON ELLAS MÁS TARDE." );
+                                        iterar = true;
+                                        System.out.println( "\n ------------------------------------------------------------------" );
+                                        System.out.println( "|  ¿QUÉ OPERACIÓN DESEA REALIZAR SOBRE LOS CURSOS DE ESTE ALUMNO?  |");
+                                        System.out.println( " ------------------------------------------------------------------" );
+                                        System.out.println( "|  1. REEMPLAZAR CURSO                                             |" );
+                                        System.out.println( "|  2. ELIMINAR CURSO                                               |");
+                                        System.out.println( "|  0. VOLVER                                                       |");
+                                        System.out.println( " ------------------------------------------------------------------" );
+                                        opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                    
+                                        switch( opcion ) {
+                                            case "1":
+                                                colegio.mostrarCursosAlumno( rut );
+                                                clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO QUE DESEA REEMPLAZAR: " );
+                                                if ( colegio.verificarCursoAlumno( rut, clave ) ) {
+                                                    System.out.println( "\n¡CURSO ENCONTRADO CON ÉXITO!" );
+                                                    ingresado = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL NUEVO CURSO:" );
+                                                    if ( !colegio.verificarCursoAlumno( rut, ingresado ) ) {
+                                                                                                                
+                                                        nombre = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DEL NUEVO CURSO:" );
+                                                        asignatura = new Asignatura( nombre, ingresado );
+                                                        
+                                                        while ( iterar ) {
+                                                            System.out.println( "\n ------------------------------------------------------------------------" );
+                                                            System.out.println( "|            ¿ESTÁ SEGURO DE QUE DESEA REEMPLAZAR ESTE CURSO?            |" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "  CURSO ORIGINAL: " + colegio.obtenerNombreCursoAlumno( rut, clave ) + " (" + clave + ")" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "  NUEVO CURSO: " + nombre + " (" + ingresado + ")" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "|                         ¿CONFIRMAR  OPERACIÓN?                         |" );
+                                                            System.out.println( " ------------------------------------------------------------------------" );
+                                                            System.out.println( "|  1. SÍ                                                                 |" );
+                                                            System.out.println( "|  0. NO                                                                 |" );
+                                                            System.out.println( " ------------------------------------------------------------------------" );
+                                                            opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+                                                        
+                                                            switch( opcion ) {
+                                                                case "1":
+                                                                    colegio.reemplazarCursoAlumno( rut, clave, asignatura );
+                                                                    System.out.println( "\nEL CURSO HA SIDO REEMPLAZADO CON ÉXITO." );
+                                                                    iterar = false;
+                                                                    break;
+                                                                
+                                                                case "0":
+                                                                    System.out.println( "\nEL CURSO NO HA SIDO REEMPLAZADO." );
+                                                                    iterar = false;
+                                                                    break;
+                                                            
+                                                                default:
+                                                                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                                    break;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL REEMPLAZAR CURSO DEL ALUMNO.\nLA CLAVE INGRESADA YA ESTÁ ASOCIADA A OTRO CURSO DEL MISMO ALUMNO." );
+                                                    }
+                                                } else {
+                                                    System.out.println( "\nERROR AL REEMPLAZAR CURSO DEL ALUMNO. EL ALUMNO NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                                }
+                                                iterar = true;
+                                                while ( iterar ) {
+                                                    System.out.println( "\n --------------------------------------------------------" );
+                                                    System.out.println( "|  ¿DESEA SEGUIR MODIFICANDO LOS CURSOS DE ESTE ALUMNO?  |" );
+                                                    System.out.println( " --------------------------------------------------------" );
+                                                    System.out.println( "|  1. SÍ                                                 |" );
+                                                    System.out.println( "|  0. NO                                                 |" );
+                                                    System.out.println( " --------------------------------------------------------" );
+                                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:");
+                                                    
+                                                    switch( opcion ) {
+                                                        case "1":
+                                                            if ( colegio.cantidadCursosAlumno( rut ) != 0 ) {
+                                                                iterar = false;
+                                                            } else {
+                                                                System.out.println( "\nERROR AL MODIFICAR CURSOS DEL ALUMNO. EL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                                                volver = true;
+                                                                iterar = false;
+                                                            }
+                                                            break;
+                                                                
+                                                        case "0":
+                                                            volver = true;
+                                                            iterar = false;
+                                                            break;
+                                                            
+                                                        default:
+                                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                            
+                                            case "2":
+                                                colegio.mostrarCursosAlumno( rut );
+                                                clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO QUE DESEA ELIMINAR: " );
+                                                if ( colegio.verificarCursoAlumno( rut, clave ) ) {
+                                                    System.out.println( "\n¡CURSO ENCONTRADO CON ÉXITO!" );
+                                                    while ( iterar ) {
+                                                        System.out.println( "\n ------------------------------------------------------------------------" );
+                                                        System.out.println( "|             ¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE CURSO?             |" );
+                                                        System.out.println( " ------------------------------------------------------------------------");
+                                                        System.out.println( "  CURSO: " + colegio.obtenerNombreCursoAlumno( rut, clave ) + " (" + clave + ")" );
+                                                        System.out.println( " ------------------------------------------------------------------------");
+                                                        System.out.println( "|                         ¿CONFIRMAR  OPERACIÓN?                         |" );
+                                                        System.out.println( " ------------------------------------------------------------------------" );
+                                                        System.out.println( "|  1. SÍ                                                                 |" );
+                                                        System.out.println( "|  0. NO                                                                 |" );
+                                                        System.out.println( " ------------------------------------------------------------------------" );
+                                                        opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                                        
+                                                        switch( opcion ) {
+                                                            case "1":
+                                                            colegio.eliminarCursoAlumno( rut, clave );
+                                                            System.out.println( "\nEL CURSO HA SIDO ELIMINADO CON ÉXITO." );
+                                                            iterar = false;
+                                                            break;
+                                                                
+                                                            case "0":
+                                                                System.out.println( "\nEL CURSO NO HA SIDO ELIMINADO." );
+                                                                iterar = false;
+                                                                break;
+                                                            
+                                                            default:
+                                                                System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                                break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    System.out.println( "\nERROR AL ELIMINAR CURSO DEL ALUMNO. EL ALUMNO NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                                }
+                                                iterar = true;
+                                                while ( iterar ) {
+                                                    System.out.println( "\n --------------------------------------------------------" );
+                                                    System.out.println( "|  ¿DESEA SEGUIR MODIFICANDO LOS CURSOS DE ESTE ALUMNO?  |" );
+                                                    System.out.println( " --------------------------------------------------------" );
+                                                    System.out.println( "|  1. SÍ                                                 |" );
+                                                    System.out.println( "|  0. NO                                                 |" );
+                                                    System.out.println( " --------------------------------------------------------" );
+                                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                    
+                                                    switch( opcion ) {
+                                                        case "1":
+                                                            if ( colegio.cantidadCursosAlumno( rut ) != 0 ) {
+                                                                iterar = false;
+                                                            } else {
+                                                                System.out.println( "\nERROR AL MODIFICAR CURSOS DEL ALUMNO. EL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                                                volver = true;
+                                                                iterar = false;
+                                                            }
+                                                            break;
+                                                                
+                                                        case "0":
+                                                            volver = true;
+                                                            iterar = false;
+                                                            break;
+                                                            
+                                                        default:
+                                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        
+                                            case "0":
+                                                volver = true;
+                                                this.setVisible( true );
+                                                JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );
+                                                break;
+                                        
+                                            default:
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EJECUTAR LA OPCIÓN.\nLA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL ALUMNO.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                            }
+                        }
+                break;
+                
+            case "14":
+                if ( colegio.hayProfesores() ) {
+                            JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL PROFESOR.\nNO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL PROFESOR CUYOS CURSOS DESEA MODIFICAR:" );
+                            if ( colegio.verificarProfesor( rut ) ) {
+                                if ( colegio.cantidadCursosProfesor( rut ) == 0 ) {
+                                    JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL PROFESOR.\nEL PROFESOR INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                } else {
+                                    while ( !volver ) {
+                                        this.setVisible( false );
+                                        JOptionPane.showMessageDialog( null, "EL MENÚ NECESARIO PARA SEGUIR TRABAJANDO SERÁ IMPRESO EN CONSOLA.\nPOR FAVOR, NO CIERRE ESTA VENTANA O CUALQUIER VENTANA SIGUIENTE PARA PODER INTERACTUAR CON ELLAS MÁS TARDE." );
+                                        iterar = true;
+                                        System.out.println( "\n --------------------------------------------------------------------" );
+                                        System.out.println( "|  ¿QUÉ OPERACIÓN DESEA REALIZAR SOBRE LOS CURSOS DE ESTE PROFESOR?  |");
+                                        System.out.println( " --------------------------------------------------------------------" );
+                                        System.out.println( "|  1. REEMPLAZAR CURSO                                               |" );
+                                        System.out.println( "|  2. ELIMINAR CURSO                                                 |");
+                                        System.out.println( "|  0. VOLVER                                                         |");
+                                        System.out.println( " --------------------------------------------------------------------" );
+                                        opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                    
+                                        switch( opcion ) {
+                                            case "1":
+                                                colegio.mostrarCursosProfesor( rut );
+                                                clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO QUE DESEA REEMPLAZAR: " );
+                                                if ( colegio.verificarCursoProfesor( rut, clave ) ) {
+                                                    System.out.println( "\n¡CURSO ENCONTRADO CON ÉXITO!" );
+                                                    ingresado = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL NUEVO CURSO:" );
+                                                    if ( !colegio.verificarCursoProfesor( rut, ingresado ) ) {
+                                                                                                                
+                                                        nombre = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DEL NUEVO CURSO:" );
+                                                        asignatura = new Asignatura( nombre, ingresado );
+                                                        
+                                                        while ( iterar ) {
+                                                            System.out.println( "\n ------------------------------------------------------------------------" );
+                                                            System.out.println( "|            ¿ESTÁ SEGURO DE QUE DESEA REEMPLAZAR ESTE CURSO?            |" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "  CURSO ORIGINAL: " + colegio.obtenerNombreCursoProfesor( rut, clave ) + " (" + clave + ")" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "  NUEVO CURSO: " + nombre + " (" + ingresado + ")" );
+                                                            System.out.println( " ------------------------------------------------------------------------");
+                                                            System.out.println( "|                         ¿CONFIRMAR  OPERACIÓN?                         |" );
+                                                            System.out.println( " ------------------------------------------------------------------------" );
+                                                            System.out.println( "|  1. SÍ                                                                 |" );
+                                                            System.out.println( "|  0. NO                                                                 |" );
+                                                            System.out.println( " ------------------------------------------------------------------------" );
+                                                            opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: " );
+                                                        
+                                                            switch( opcion ) {
+                                                                case "1":
+                                                                    colegio.reemplazarCursoProfesor( rut, clave, asignatura );
+                                                                    System.out.println( "\nEL CURSO HA SIDO REEMPLAZADO CON ÉXITO." );
+                                                                    iterar = false;
+                                                                    break;
+                                                                
+                                                                case "0":
+                                                                    System.out.println( "\nEL CURSO NO HA SIDO REEMPLAZADO." );
+                                                                    iterar = false;
+                                                                    break;
+                                                            
+                                                                default:
+                                                                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                                    break;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        JOptionPane.showMessageDialog( null, "ERROR AL REEMPLAZAR CURSO DEL PROFESOR.\nLA CLAVE INGRESADA YA ESTÁ ASOCIADA A OTRO CURSO DEL MISMO PROFESOR." );
+                                                    }
+                                                } else {
+                                                    System.out.println( "\nERROR AL REEMPLAZAR CURSO DEL PROFESOR. EL PROFESOR NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                                }
+                                                iterar = true;
+                                                while ( iterar ) {
+                                                    System.out.println( "\n ----------------------------------------------------------" );
+                                                    System.out.println( "|  ¿DESEA SEGUIR MODIFICANDO LOS CURSOS DE ESTE PROFESOR?  |" );
+                                                    System.out.println( " ----------------------------------------------------------" );
+                                                    System.out.println( "|  1. SÍ                                                   |" );
+                                                    System.out.println( "|  0. NO                                                   |" );
+                                                    System.out.println( " ----------------------------------------------------------" );
+                                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:");
+                                                    
+                                                    switch( opcion ) {
+                                                        case "1":
+                                                            if ( colegio.cantidadCursosAlumno( rut ) != 0 ) {
+                                                                iterar = false;
+                                                            } else {
+                                                                System.out.println( "\nERROR AL MODIFICAR CURSOS DEL PROFESOR. EL PROFESOR INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                                                volver = true;
+                                                                iterar = false;
+                                                            }
+                                                            break;
+                                                                
+                                                        case "0":
+                                                            volver = true;
+                                                            iterar = false;
+                                                            break;
+                                                            
+                                                        default:
+                                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                            
+                                            case "2":
+                                                colegio.mostrarCursosProfesor( rut );
+                                                clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO QUE DESEA ELIMINAR: " );
+                                                if ( colegio.verificarCursoProfesor( rut, clave ) ) {
+                                                    System.out.println( "\n¡CURSO ENCONTRADO CON ÉXITO!" );
+                                                    while ( iterar ) {
+                                                        System.out.println( "\n ------------------------------------------------------------------------" );
+                                                        System.out.println( "|             ¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE CURSO?             |" );
+                                                        System.out.println( " ------------------------------------------------------------------------");
+                                                        System.out.println( "  CURSO: " + colegio.obtenerNombreCursoProfesor( rut, clave ) + " (" + clave + ")" );
+                                                        System.out.println( " ------------------------------------------------------------------------");
+                                                        System.out.println( "|                         ¿CONFIRMAR  OPERACIÓN?                         |" );
+                                                        System.out.println( " ------------------------------------------------------------------------" );
+                                                        System.out.println( "|  1. SÍ                                                                 |" );
+                                                        System.out.println( "|  0. NO                                                                 |" );
+                                                        System.out.println( " ------------------------------------------------------------------------" );
+                                                        opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                                        
+                                                        switch( opcion ) {
+                                                            case "1":
+                                                            colegio.eliminarCursoProfesor( rut, clave );
+                                                            System.out.println( "\nEL CURSO HA SIDO ELIMINADO CON ÉXITO." );
+                                                            iterar = false;
+                                                            break;
+                                                                
+                                                            case "0":
+                                                                System.out.println( "\nEL CURSO NO HA SIDO ELIMINADO." );
+                                                                iterar = false;
+                                                                break;
+                                                            
+                                                            default:
+                                                                System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                                break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    System.out.println( "\nERROR AL ELIMINAR CURSO DEL PROFESOR. EL PROFESOR NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                                }
+                                                iterar = true;
+                                                while ( iterar ) {
+                                                    System.out.println( "\n ----------------------------------------------------------" );
+                                                    System.out.println( "|  ¿DESEA SEGUIR MODIFICANDO LOS CURSOS DE ESTE PROFESOR?  |" );
+                                                    System.out.println( " ----------------------------------------------------------" );
+                                                    System.out.println( "|  1. SÍ                                                   |" );
+                                                    System.out.println( "|  0. NO                                                   |" );
+                                                    System.out.println( " ----------------------------------------------------------" );
+                                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                    
+                                                    switch( opcion ) {
+                                                        case "1":
+                                                            if ( colegio.cantidadCursosProfesor( rut ) != 0 ) {
+                                                                iterar = false;
+                                                            } else {
+                                                                System.out.println( "\nERROR AL MODIFICAR CURSOS DEL PROFESOR. EL PROFESOR INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                                                volver = true;
+                                                                iterar = false;
+                                                            }
+                                                            break;
+                                                                
+                                                        case "0":
+                                                            volver = true;
+                                                            iterar = false;
+                                                            break;
+                                                            
+                                                        default:
+                                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE.");
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        
+                                            case "0":
+                                                volver = true;
+                                                this.setVisible( true );
+                                                JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );
+                                                break;
+                                        
+                                            default:
+                                                JOptionPane.showMessageDialog( null, "ERROR AL EJECUTAR LA OPCIÓN.\nLA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog( null, "ERROR AL MODIFICAR CURSOS DEL PROFESOR.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR." );
+                            }
+                        }
+                break;
+                
+            case "15":
+                if ( colegio.hayAlumnos() ) {
+                            System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            if ( asignatura == null ) {
+                                System.out.println( "\nERROR AL AGREGAR NOTA. NO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                            } else {
+                                rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO AL QUE DESEA AGREGAR UNA NOTA:" );
+                                if ( colegio.verificarAlumno( rut ) ) {
+                                    if ( colegio.cantidadCursosAlumno( rut ) == 0 ) {
+                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO INGRESADO NO ESTÁ INSCRITO EN NINGÚN CURSO." );
+                                    } else {
+                                        while ( !volver ) {
+                                            this.setVisible( false );
+                                            JOptionPane.showMessageDialog( null, "EL MENÚ NECESARIO PARA SEGUIR TRABAJANDO SERÁ IMPRESO EN CONSOLA.\nPOR FAVOR, NO CIERRE ESTA VENTANA O CUALQUIER VENTANA SIGUIENTE PARA PODER INTERACTUAR CON ELLAS MÁS TARDE." );
+                                            colegio.mostrarCursosAlumno( rut );
+                                            clave = JOptionPane.showInputDialog( null, "INGRESE LA CLAVE DEL CURSO EN EL CUAL DESEA AGREGAR LA NOTA:" );
+                                            if ( colegio.verificarCursoAlumno( rut, clave ) ) {
+                                                while ( !volver ) {
+                                                    iterar = true;
+                                                    evaluacion = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DE LA EVALUACIÓN:" );
+                                                    if ( !colegio.verificarEvaluacionAlumno( rut, clave, evaluacion ) ) {
+                                                        while ( iterar ) {
+                                                            ingresado = JOptionPane.showInputDialog( null, "INGRESE LA NOTA QUE DESEA AGREGAR\n(ADVERTENCIA: LA NOTA DEBE TENER UN VALOR ENTRE 1 Y 7):" );
+                                                            if ( colegio.esNumero( ingresado ) ) {
+                                                                valorNota = Math.round( Double.parseDouble( ingresado ) * 10 ) / 10d;
+                                                                if ( valorNota > 7 ) {
+                                                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO EXCEDE EL MÁXIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                } else {
+                                                                    if ( valorNota < 1 ) {
+                                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO ESTÁ POR DEBAJO DEL MÍNIMO ACEPTADO, INTENTE NUEVAMENTE." );
+                                                                    } else {
+                                                                        iterar = false;
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                System.out.println( "\nERROR AL AGREGAR NOTA. EL VALOR INGRESADO NO ES VÁLIDO, INTENTE NUEVAMENTE." );
+                                                            }
+                                                        } 
+                                                        nota = new Nota( evaluacion, valorNota );
+                                                        colegio.agregarNotaAlumno( rut, clave, nota );
+                                                        System.out.println( "\nLA NOTA FUE AGREGADA CON ÉXITO." );
+                                                        iterar = true;
+                                                        while ( iterar ) {
+                                                            System.out.println( "\n ---------------------------------------------------" );
+                                                            System.out.println( "|      ¿DESEA AGREGAR OTRA NOTA EN ESTE CURSO?      |" );
+                                                            System.out.println( " ---------------------------------------------------" );
+                                                            System.out.println( "|  1. SÍ                                            |" );
+                                                            System.out.println( "|  0. NO                                            |" );
+                                                            System.out.println( " ---------------------------------------------------" );
+                                                            opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR: ");
+                                                    
+                                                            switch( opcion ) {
+                                                                case "1":
+                                                                    iterar = false;
+                                                                    break;
+                                                            
+                                                                case "0":
+                                                                    iterar = false;
+                                                                    volver = true;
+                                                                    this.setVisible( true );
+                                                                    JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );
+                                                                    break;
+                                                            
+                                                                default:
+                                                                    System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                                    break;
+                                                            }
+                                                        }
+                                                    } else {
+                                                        System.out.println( "\nERROR AL AGREGAR NOTA. EL NOMBRE INGRESADO YA ESTÁ ASOCIADO A OTRA EVALUACIÓN DEL MISMO ALUMNO, INTENTE NUEVAMENTE." );
+                                                    }
+                                                }
+                                            } else {
+                                                System.out.println( "\nERROR AL AGREGAR NOTA. EL ALUMNO NO ESTÁ INSCRITO EN EL CURSO INGRESADO." );
+                                            }
+                                            iterar = true;
+                                            while ( iterar ) {
+                                                System.out.println( "\n ---------------------------------------------------" );
+                                                System.out.println( "|  ¿DESEA SEGUIR AGREGANDO NOTAS PARA ESTE ALUMNO?  |" );
+                                                System.out.println( " ---------------------------------------------------" );
+                                                System.out.println( "|  1. SÍ                                            |" );
+                                                System.out.println( "|  0. NO                                            |" );
+                                                System.out.println( " ---------------------------------------------------" );
+                                                opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:");
+                                                
+                                                switch( opcion ) {
+                                                    case "1":
+                                                        iterar = false;
+                                                        volver = false;
+                                                        break;
+                                                    
+                                                    case "0":
+                                                        iterar = false;
+                                                        volver = true;
+                                                        this.setVisible( true );
+                                                        JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );    
+                                                        break;
+                                                        
+                                                    default:
+                                                        System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    System.out.println( "\nERROR AL AGREGAR NOTA. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                                }
+                            }
+                        }
+                break;
+                
+            case "16":
+                if ( colegio.hayAlumnos() ) {
+                    JOptionPane.showMessageDialog( null, "ERROR AL REVISAR SITUACIÓN ACADÉMICA.\nNO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                } else {
+                    if ( asignatura == null ) {
+                        JOptionPane.showMessageDialog( null, "ERROR AL REVISAR SITUACIÓN ACADÉMICA.\nNO HAY NINGÚN CURSO REGISTRADO EN EL SISTEMA." );
+                    } else {
+                        this.setVisible( false );
+                        JOptionPane.showMessageDialog( null, "EL MENÚ NECESARIO PARA SEGUIR TRABAJANDO SERÁ IMPRESO EN CONSOLA.\nPOR FAVOR, NO CIERRE ESTA VENTANA O CUALQUIER VENTANA SIGUIENTE PARA PODER INTERACTUAR CON ELLAS MÁS TARDE." );
+                        while ( !volver ) {
+                            System.out.println( "\n -------------------------------------------------------------------------" );
+                            System.out.println( "|                 ¿QUÉ SITUACIÓN ACADÉMICA DESEA REVISAR?                 |" );
+                            System.out.println( " -------------------------------------------------------------------------");
+                            System.out.println( "|  1. BUSCAR ALUMNO CON PROMEDIO MÁS ALTO                                 |" );
+                            System.out.println( "|  2. BUSCAR ALUMNO CON PROMEDIO MÁS BAJO                                 |" );
+                            System.out.println( "|  3. ALUMNOS CON PROMEDIO SOBRESALIENTE                                  |" );
+                            System.out.println( "|  4. ALUMNOS EN SITUACIÓN DE REPITENCIA                                  |" );
+                            System.out.println( "|  0. VOLVER                                                              |" );
+                            System.out.println( " -------------------------------------------------------------------------" );
+                            opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR\n(OBSERVACIÓN: ESTAS OPERACIONES TRABAJAN EN BASE A LA TOTALIDAD DE CURSOS Y ALUMNOS):" );
+                                    
+                            switch( opcion ) {
+                                case "1":
+                                    colegio.mostrarAlumnoPromedioMasAlto();
+                                    break;
+                                            
+                                case "2":
+                                    colegio.mostrarAlumnoPromedioMasBajo();
+                                    break;
+                                            
+                                case "3":
+                                    colegio.totalAlumnosPromedioSobresaliente();
+                                    break;
+                                            
+                                case "4":
+                                    colegio.totalAlumnosEnSituaciónRepitencia();
+                                    break;
+                                            
+                                case "0":
+                                    volver = true;
+                                    this.setVisible( true );
+                                    JOptionPane.showMessageDialog( null, "\nTODOS LOS DATOS INGRESADOS HASTA EL MOMENTO HAN SIDO PERDIDOS.\nPOR FAVOR, INGRÉSELOS NUEVAMENTE O DESBLOQUEE LOS VALORES DE PRUEBA." );
+                                    break;
+                                            
+                                default:
+                                    JOptionPane.showMessageDialog( null, "ERROR AL REVISAR SITUACIÓN ACADÉMICA.\nLA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                    break;
+                            }  
+                        }
+                    }
+                }
+                break;
+                
+            case "17":
+                if ( colegio.hayAlumnos() ) {
+                            System.out.println( "\nERROR AL ELIMINAR ALUMNO. NO HAY NINGÚN ALUMNO REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL ALUMNO QUE DESEA ELIMINAR:" );
+                            if ( colegio.verificarAlumno( rut ) ) {
+                                System.out.println( "\n¡ALUMNO ENCONTRADO CON ÉXITO!" );
+                                while ( iterar ) {
+                                    System.out.println( "\n -------------------------------------------------------------------------" );
+                                    System.out.println( "|             ¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE ALUMNO?             |" );
+                                    System.out.println( " -------------------------------------------------------------------------");
+                                    System.out.println( "  ALUMNO: " + colegio.obtenerNombreAlumno( rut ) + " (" + rut + ")" );
+                                    System.out.println( " -------------------------------------------------------------------------");
+                                    System.out.println( "|                          ¿CONFIRMAR OPERACIÓN?                          |" );
+                                    System.out.println( " -------------------------------------------------------------------------" );
+                                    System.out.println( "|  1. SÍ                                                                  |" );
+                                    System.out.println( "|  0. NO                                                                  |" );
+                                    System.out.println( " -------------------------------------------------------------------------" );
+                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                    
+                                    switch( opcion ) {
+                                        case "1":
+                                            colegio.eliminarAlumno( rut );
+                                            System.out.println( "\nEL ALUMNO HA SIDO ELIMINADO CON ÉXITO." );
+                                            iterar = false;
+                                            break;
+                                                                
+                                        case "0":
+                                            System.out.println( "\nEL ALUMNO NO HA SIDO ELIMINADO." );
+                                            iterar = false;
+                                            break;
+                                                            
+                                        default:
+                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                            break;
+                                    }
+                                }
+                            } else {
+                                System.out.println( "\nERROR AL ELIMINAR ALUMNO. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO." );
+                            }
+                        }
+                break;
+                
+            case "18":
+                if ( colegio.hayProfesores() ) {
+                            System.out.println( "\nERROR AL ELIMINAR PROFESOR. NO HAY NINGÚN PROFESOR REGISTRADO EN EL SISTEMA." );
+                        } else {
+                            rut = JOptionPane.showInputDialog( null, "INGRESE EL RUT DEL PROFESOR QUE DESEA ELIMINAR:" );
+                            if ( colegio.verificarProfesor( rut ) ) {
+                                System.out.println( "\n¡PROFESOR ENCONTRADO CON ÉXITO!" );
+                                while ( iterar ) {
+                                    System.out.println( "\n -------------------------------------------------------------------------" );
+                                    System.out.println( "|            ¿ESTÁ SEGURO DE QUE DESEA ELIMINAR ESTE PROFESOR?            |" );
+                                    System.out.println( " -------------------------------------------------------------------------");
+                                    System.out.println( "  PROFESOR: " + colegio.obtenerNombreProfesor( rut ) + " (" + rut + ")" );
+                                    System.out.println( " -------------------------------------------------------------------------");
+                                    System.out.println( "|                          ¿CONFIRMAR OPERACIÓN?                          |" );
+                                    System.out.println( " -------------------------------------------------------------------------" );
+                                    System.out.println( "|  1. SÍ                                                                  |" );
+                                    System.out.println( "|  0. NO                                                                  |" );
+                                    System.out.println( " -------------------------------------------------------------------------" );
+                                    opcion = JOptionPane.showInputDialog( null, "INGRESE LA OPCIÓN QUE DESEA REALIZAR:" );
+                                                        
+                                    switch( opcion ) {
+                                        case "1":
+                                            colegio.eliminarProfesor( rut );
+                                            System.out.println( "\nEL PROFESOR HA SIDO ELIMINADO CON ÉXITO." );
+                                            iterar = false;
+                                            break;
+                                                                
+                                        case "0":
+                                            System.out.println( "\nEL PROFESOR NO HA SIDO ELIMINADO." );
+                                            iterar = false;
+                                            break;
+                                                            
+                                        default:
+                                            System.out.println( "\nERROR AL EJECUTAR LA OPCIÓN. LA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
+                                            break;
+                                    }
+                                }
+                            } else {
+                                System.out.println( "\nERROR AL ELIMINAR PROFESOR. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR." );
+                            }
+                        }
                 break;
                 
             case "0":
                 if ( JOptionPane.showConfirmDialog( null, "¿DESEA VOLVER AL MENÚ PRINCIPAL?\nADVERTENCIA: LOS DATOS INGRESADOS NO SE GUARDARÁN." ) == 0 ) {
+                    if ( JOptionPane.showConfirmDialog( null, "¿DESEA CREAR UN ARCHIVO .txt, CON LOS DATOS DE LOS ALUMNOS Y\nPROFESORES REGISTRADOS HASTA EL MOMENTO, EN SU ESCRITORIO?" ) == 0) {
+                        while ( iterar ) {
+                            ingresado = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE DEL USUARIO DE SU COMPUTADORA:" );
+                            nombre = JOptionPane.showInputDialog( null, "INGRESE EL NOMBRE QUE DESEA DAR AL ARCHIVO:" );
+                            String direccion = "C:/Users/" + ingresado + "/Desktop/" + nombre;
+                            try {
+                                colegio.crearArchivotxt( direccion );
+                                JOptionPane.showMessageDialog( null, "¡ARCHIVO CREADO CON ÉXITO!" );
+                                iterar = false;
+                            } catch( FileNotFoundException e ) {
+                                JOptionPane.showMessageDialog( null, "ERROR AL CREAR ARCHIVO.\nEL NOMBRE DE USUARIO INGRESADO NO SE CORRESPONDE CON EL DE SU COMPUTADORA, INTENTE NUEVAMENTE." );
+                            } catch (IOException ex) {
+                                Logger.getLogger(MenuAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
                     menu.setVisible( true );
                     this.setVisible( false );
                 }
+                break;
+                
+            default:
+                JOptionPane.showMessageDialog( null, "ERROR AL EJECUTAR LA OPCIÓN.\nLA OPCIÓN INGRESADA NO ES VÁLIDA, INTENTE NUEVAMENTE." );
                 break;
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -415,41 +1319,6 @@ public class MenuAdministrador extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MenuAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MenuAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MenuAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MenuAdministrador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenuAdministrador().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -330,23 +330,46 @@ public class Colegio {
     }
     
     public void mostrarAlumnos() {
+        System.out.println( "\n ------------------------------------------------------------------------" );
+        System.out.println( "|                            LISTA DE ALUMNOS                            |");
+        System.out.println( " ------------------------------------------------------------------------");
+        
+        for ( int i = 0; i < this.listaAlumnos.size(); i++ ) {
+            this.listaAlumnos.get( i ).mostrarDatos( i );
+        }
+    }
+    
+    public void mostrarAlumnosVentana() {
         /*
         System.out.println( "\n ------------------------------------------------------------------------" );
         System.out.println( "|                            LISTA DE ALUMNOS                            |");
         System.out.println( " ------------------------------------------------------------------------");
         */
         for ( int i = this.listaAlumnos.size() - 1; i >= 0; i-- ) {
-            this.listaAlumnos.get( i ).mostrarDatos( i );
+            this.listaAlumnos.get( i ).mostrarDatosVentana( i );
         }
     }
     
     public void consultarAlumno( String rut ) {
         if ( this.mapaAlumnos.containsKey( rut ) ) {
+            System.out.println( "\n -----------------------------------------------------------------------" );
+            System.out.println( "|                           ALUMNO ENCONTRADO                           |");
+            System.out.println( " -----------------------------------------------------------------------");
+            this.alumnoBuscado = ( Alumno ) this.mapaAlumnos.get( rut );
+            this.alumnoBuscado.mostrarDatos();
+        }
+        else {
+            System.out.println( "\nERROR AL BUSCAR ALUMNO. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO REGISTRADO." );
+        }
+    }
+    
+    public void consultarAlumnoVentana( String rut ) {
+        if ( this.mapaAlumnos.containsKey( rut ) ) {
             /*System.out.println( "\n -----------------------------------------------------------------------" );
             System.out.println( "|                           ALUMNO ENCONTRADO                           |");
             System.out.println( " -----------------------------------------------------------------------");*/
             this.alumnoBuscado = ( Alumno ) this.mapaAlumnos.get( rut );
-            this.alumnoBuscado.mostrarDatos();
+            this.alumnoBuscado.mostrarDatosVentana();
         }
         else {
             JOptionPane.showMessageDialog( null, "ERROR AL BUSCAR ALUMNO.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO REGISTRADO." );
@@ -360,6 +383,16 @@ public class Colegio {
         }
         else {
             System.out.println( "\nERROR AL MOSTRAR CURSOS DEL ALUMNO. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO REGISTRADO." );
+        }
+    }
+    
+    public void mostrarCursosAlumnoVentana( String rut ) {
+        if ( this.mapaAlumnos.containsKey( rut ) ) {
+            this.alumnoBuscado = ( Alumno ) this.mapaAlumnos.get( rut );
+            this.alumnoBuscado.mostrarCursosVentana();
+        }
+        else {
+            JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR CURSOS DEL ALUMNO.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN ALUMNO REGISTRADO." );
         }
     }
     
@@ -490,22 +523,45 @@ public class Colegio {
     }
     
     public void mostrarProfesores() {
+        System.out.println( "\n -----------------------------------------------------------------------" );
+        System.out.println( "|                          LISTA DE PROFESORES                          |");
+        System.out.println( " -----------------------------------------------------------------------");
+        
+        for ( int i = 0; i < this.listaProfesores.size(); i++ ) {
+            this.listaProfesores.get( i ).mostrarDatos( i );
+        }
+    }
+    
+    public void mostrarProfesoresVentana() {
         /*System.out.println( "\n -----------------------------------------------------------------------" );
         System.out.println( "|                          LISTA DE PROFESORES                          |");
         System.out.println( " -----------------------------------------------------------------------");*/
         
         for ( int i = this.listaProfesores.size() - 1; i >= 0; i-- ) {
-            this.listaProfesores.get( i ).mostrarDatos( i );
+            this.listaProfesores.get( i ).mostrarDatosVentana( i );
         }
     }
     
     public void consultarProfesor( String rut ) {
         if ( this.mapaProfesores.containsKey( rut ) ) {
+            System.out.println( "\n -----------------------------------------------------------------------" );
+            System.out.println( "|                          PROFESOR ENCONTRADO                          |");
+            System.out.println( " -----------------------------------------------------------------------");
+            this.profesorBuscado = ( Profesor ) this.mapaProfesores.get( rut );
+            this.profesorBuscado.mostrarDatos();
+        }
+        else {
+            System.out.println( "\nERROR AL BUSCAR PROFESOR. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR REGISTRADO." );
+        }
+    }
+    
+    public void consultarProfesorVentana( String rut ) {
+        if ( this.mapaProfesores.containsKey( rut ) ) {
             /*System.out.println( "\n -----------------------------------------------------------------------" );
             System.out.println( "|                          PROFESOR ENCONTRADO                          |");
             System.out.println( " -----------------------------------------------------------------------");*/
             this.profesorBuscado = ( Profesor ) this.mapaProfesores.get( rut );
-            this.profesorBuscado.mostrarDatos();
+            this.profesorBuscado.mostrarDatosVentana();
         }
         else {
             JOptionPane.showMessageDialog( null, "ERROR AL BUSCAR PROFESOR.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR REGISTRADO." );
@@ -519,6 +575,16 @@ public class Colegio {
         }
         else {
             System.out.println( "\nERROR AL MOSTRAR CURSOS DEL PROFESOR. EL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR REGISTRADO." );
+        }
+    }
+    
+    public void mostrarCursosProfesorVentana( String rut ) {
+        if ( this.mapaProfesores.containsKey( rut ) ) {
+            this.profesorBuscado = ( Profesor ) this.mapaProfesores.get( rut );
+            this.profesorBuscado.mostrarCursosVentana();
+        }
+        else {
+            JOptionPane.showMessageDialog( null, "ERROR AL MOSTRAR CURSOS DEL PROFESOR.\nEL RUT INGRESADO NO SE CORRESPONDE CON EL DE NINGÚN PROFESOR REGISTRADO." );
         }
     }
     

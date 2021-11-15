@@ -56,9 +56,35 @@ public class Alumno extends Persona {
         this.cursoBuscado = this.mapaCursos.get( clave );
         return this.cursoBuscado.getNombre();
     }
-        
+    
     @Override
     public void mostrarDatos( int i ) {
+        int k;
+        double promedio = 0;
+        System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + getNombre() );
+        System.out.println( "     | RUT: " + getRut() );
+        System.out.println( "     | EDAD: " + getEdad() );
+        if ( !this.cursosInscritos.isEmpty() ) {
+            System.out.print( "     | CURSOS: " );
+            for ( k = 0; k < ( this.cursosInscritos.size() - 1 ); k++ ) {
+                System.out.print( this.cursosInscritos.get( k ).getClave() + " | ");
+            }
+            System.out.println( this.cursosInscritos.get( k ).getClave() );
+        }
+        else {
+            System.out.println( "     | CURSOS: No hay cursos inscritos." );
+        }
+        promedio = calcularPromedioGeneral();
+        if ( promedio != 0 ) {
+            System.out.println( "     | PROMEDIO GENERAL: " + promedio );
+        } else {
+            System.out.println( "     | PROMEDIO GENERAL: -" );
+        }
+        System.out.println( " ------------------------------------------------------------------------");
+    }
+    
+    @Override
+    public void mostrarDatosVentana( int i ) {
         /*
         int k;
         double promedio = 0;
@@ -91,6 +117,32 @@ public class Alumno extends Persona {
     
     @Override
     public void mostrarDatos() {
+        int i;
+        double promedio = 0;
+        System.out.println( "  NOMBRE: " + getNombre() );
+        System.out.println( "  RUT: " + getRut() );
+        System.out.println( "  EDAD: " + getEdad() );
+        if ( !this.cursosInscritos.isEmpty() ) {
+            System.out.print( "  CURSOS: " );
+            for ( i = 0; i < ( this.cursosInscritos.size() - 1 ); i++ ) {
+                System.out.print( this.cursosInscritos.get( i ).getClave() + " | ");
+            }
+            System.out.println( this.cursosInscritos.get( i ).getClave() );
+        }
+        else {
+            System.out.println( "  CURSOS: No hay cursos inscritos." );
+        }
+        promedio = calcularPromedioGeneral();
+        if ( promedio != 0 ) {
+            System.out.println( "  PROMEDIO GENERAL: " + promedio );
+        } else {
+            System.out.println( "  PROMEDIO GENERAL: -" );
+        }
+        System.out.println( " -----------------------------------------------------------------------");
+    }
+    
+    @Override
+    public void mostrarDatosVentana() {
         /*int i;
         double promedio = 0;
         System.out.println( "  NOMBRE: " + getNombre() );
@@ -167,6 +219,34 @@ public class Alumno extends Persona {
                 System.out.println( "     | PROMEDIO: -" );
             }
             System.out.println( " -----------------------------------------------------------------------");
+        }
+    }
+    
+    @Override
+    public void mostrarCursosVentana() {
+        /*double promedio = 0;
+        System.out.println( "\n -----------------------------------------------------------------------" );
+        System.out.println( "|                            LISTA DE CURSOS                            |");
+        System.out.println( " -----------------------------------------------------------------------");
+        System.out.println( "  ALUMNO: " + getNombre() + " (" + getRut() + ")" );
+        System.out.println( " -----------------------------------------------------------------------");
+        for ( int i = 0; i < this.cursosInscritos.size(); i++ ) {
+            System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + this.cursosInscritos.get( i ).getNombre() );
+            System.out.println( "     | CLAVE: " + this.cursosInscritos.get( i ).getClave() );
+            if ( !this.cursosInscritos.get( i ).hayNotas() ) {
+                System.out.print( "     | NOTAS: " );
+                this.cursosInscritos.get( i ).mostrarNotas();
+                promedio = this.cursosInscritos.get( i ).calcularPromedio();
+                promedio = Math.round( promedio * 10 ) / 10d;
+                System.out.println( "     | PROMEDIO: " + promedio );
+            } else {
+                System.out.println( "     | NOTAS: No hay notas registradas." );
+                System.out.println( "     | PROMEDIO: -" );
+            }
+            System.out.println( " -----------------------------------------------------------------------");
+        }*/
+        for ( int i = this.cursosInscritos.size() - 1; i >= 0; i-- ) {
+            this.cursosInscritos.get( i ).mostrarDatosAlumno( i, getNombre(), getRut() );
         }
     }
     

@@ -144,16 +144,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         
         switch ( opcion ) {
             case "1":
-                this.setVisible( false );
+                JOptionPane.showMessageDialog( null, "ESTA FUNCIÓN SE ENCUENTRA TEMPORALMENTE EN MANTENIMIENTO.\nLAMENTAMOS LOS INCONVENIENTES." );
                 break;
                 
             case "2":
-                this.setVisible( false );
+                JOptionPane.showMessageDialog( null, "ESTA FUNCIÓN SE ENCUENTRA TEMPORALMENTE EN MANTENIMIENTO.\nLAMENTAMOS LOS INCONVENIENTES." );
                 break;
                 
             case "3":
                 //ayd.setVisible( true );
-                this.setVisible( false );
+                JOptionPane.showMessageDialog( null, "ESTA FUNCIÓN SE ENCUENTRA TEMPORALMENTE EN MANTENIMIENTO.\nLAMENTAMOS LOS INCONVENIENTES." );
                 break;
                 
             case "4":

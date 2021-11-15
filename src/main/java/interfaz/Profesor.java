@@ -43,8 +43,26 @@ public class Profesor extends Persona {
         return this.cursoBuscado.getNombre();
     }
     
-    @Override
     public void mostrarDatos( int i ) {
+        int k;
+        System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + getNombre() );
+        System.out.println( "     | RUT: " + getRut() );
+        System.out.println( "     | EDAD: " + getEdad() );
+        if ( !this.cursosImpartidos.isEmpty() ) {
+            System.out.print( "     | CURSOS: " );
+            for ( k = 0; k < ( this.cursosImpartidos.size() - 1 ); k++) {
+                System.out.print( this.cursosImpartidos.get( k ).getClave() + " | ");
+            }
+            System.out.println( this.cursosImpartidos.get( k ).getClave() );
+        }
+        else {
+            System.out.println( "     | CURSOS: No hay cursos inscritos." );
+        }
+        System.out.println( " -----------------------------------------------------------------------");
+    }
+    
+    @Override
+    public void mostrarDatosVentana( int i ) {
         /*int k;
         System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + getNombre() );
         System.out.println( "     | RUT: " + getRut() );
@@ -66,6 +84,25 @@ public class Profesor extends Persona {
     
     @Override
     public void mostrarDatos() {
+        int i;
+        System.out.println( "  NOMBRE: " + getNombre() );
+        System.out.println( "  RUT: " + getRut() );
+        System.out.println( "  EDAD: " + getEdad() );
+        if ( !this.cursosImpartidos.isEmpty() ) {
+            System.out.print( "  CURSOS: " );
+            for ( i = 0; i < ( this.cursosImpartidos.size() - 1 ); i++) {
+                System.out.print( this.cursosImpartidos.get( i ).getClave() + " | ");
+            }
+            System.out.println( this.cursosImpartidos.get( i ).getClave() );
+        }
+        else {
+            System.out.println( "  CURSOS: No hay cursos inscritos." );
+        }
+        System.out.println( " -----------------------------------------------------------------------");
+    }
+    
+    @Override
+    public void mostrarDatosVentana() {
         /*int i;
         System.out.println( "  NOMBRE: " + getNombre() );
         System.out.println( "  RUT: " + getRut() );
@@ -115,6 +152,23 @@ public class Profesor extends Persona {
             System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + this.cursosImpartidos.get( i ).getNombre() );
             System.out.println( "     | CLAVE: " + this.cursosImpartidos.get( i ).getClave() );
             System.out.println( " -----------------------------------------------------------------------");
+        }
+    }
+    
+    @Override
+    public void mostrarCursosVentana() {
+        /*System.out.println( "\n -----------------------------------------------------------------------" );
+        System.out.println( "|                            LISTA DE CURSOS                            |");
+        System.out.println( " -----------------------------------------------------------------------");
+        System.out.println( "  PROFESOR: " + getNombre() + " (" + getRut() + ")" );
+        System.out.println( " -----------------------------------------------------------------------");
+        for ( int i = 0; i < this.cursosImpartidos.size(); i++ ) {
+            System.out.println( "  0" + ( i+1 ) + " | NOMBRE: " + this.cursosImpartidos.get( i ).getNombre() );
+            System.out.println( "     | CLAVE: " + this.cursosImpartidos.get( i ).getClave() );
+            System.out.println( " -----------------------------------------------------------------------");
+        }*/
+        for ( int i = this.cursosImpartidos.size() - 1; i >= 0; i-- ) {
+            this.cursosImpartidos.get( i ).mostrarDatosProfesor( i, getNombre(), getRut() );
         }
     }
     

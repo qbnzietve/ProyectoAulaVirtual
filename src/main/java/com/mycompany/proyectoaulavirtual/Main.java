@@ -4,7 +4,7 @@ import interfaz.*;
 import java.io.*;
 
 public class Main {
-    
+/*    
     public static void main( String arg[] ) throws IOException {
         //Menu menu = new Menu();
         Colegio colegio = new Colegio();
@@ -23,14 +23,14 @@ public class Main {
         String opcion, username, rut, nombre, contraseña, clave, evaluacion, ingresado;
         String direccion;
         BufferedReader lector = new BufferedReader( new InputStreamReader( System.in ) );
-        /*
+        
         // ADMINISTRADORES
         usuario = new Usuario( "beiache", "Bastián Caleb Sepúlveda Silva", "20.522.213-8", 20, "ProyectoAulaVirtual2021", 5 );
         colegio.registrarUsuario( usuario );
-        */
+        
         
         new MenuPrincipal().setVisible( true );
-        /*
+        
         while ( !salir ) {
             volver = false;
             iterar = true;
@@ -2958,7 +2958,7 @@ public class Main {
                 }
             }
         }
-*/
+
     }
-    
+    */
 }
